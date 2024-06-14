@@ -2,28 +2,36 @@
   "name": "recursipe",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "parcel build",
-    "serve": "nodemon dist/server/index.js",
-    "watch": "parcel watch",
-    "start": "parcel"
+    "watch": "nodemon --watch src --exec 'npm run build && npm run start'",
+    "start": "node dist/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Andrew Friedman",
+    "email": "arfriedman@umass.edu"
+  },
   "license": "ISC",
   "dependencies": {
+    "@auth/express": "^0.5.5",
+    "@auth/typeorm-adapter": "^2.2.0",
     "express": "^4.19.2",
+    "typeorm": "^0.3.20",
     "typescript": "^5.4.5"
   },
   "targets": {
     "frontend": {
       "source": "src/public/index.html",
-      "distDir": "dist/public"
+      "distDir": "dist/public",
+      "context": "browser"
     },
     "backend": {
       "source": "src/server/index.ts",
-      "distDir": "dist/server"
+      "distDir": "dist",
+      "context": "node",
+      "outputFormat": "esmodule"
     }
   },
   "devDependencies": {
