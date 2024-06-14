@@ -11,6 +11,9 @@ dependencies:
   '@auth/typeorm-adapter':
     specifier: ^2.2.0
     version: 2.2.0(typeorm@0.3.20)
+  '@parcel/macros':
+    specifier: ^2.12.0
+    version: 2.12.0
   express:
     specifier: ^4.19.2
     version: 4.19.2
@@ -554,6 +557,11 @@ packages:
       '@parcel/diagnostic': 2.12.0
       '@parcel/events': 2.12.0
     dev: true
+
+  /@parcel/macros@2.12.0:
+    resolution: {integrity: sha512-IwcFbh7Nujr3kajF238NrQXvqAymBvmUAeL9KOIHpFSYx+xFJzFF1m+jn66ptqx3hxA+6O3ouDDvzp9hTewcMw==}
+    engines: {node: '>= 12.0.0', parcel: ^2.12.0}
+    dev: false
 
   /@parcel/markdown-ansi@2.12.0:
     resolution: {integrity: sha512-WZz3rzL8k0H3WR4qTHX6Ic8DlEs17keO9gtD4MNGyMNQbqQEvQ61lWJaIH0nAtgEetu0SOITiVqdZrb8zx/M7w==}

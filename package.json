@@ -2,11 +2,13 @@
   "name": "recursipe",
   "version": "1.0.0",
   "description": "",
+  "main": "src/server/index.ts",
   "type": "module",
   "scripts": {
     "build": "parcel build",
-    "watch": "nodemon --watch src --exec 'npm run build && npm run start'",
-    "start": "node dist/index.js"
+    "start": "PUBLIC_DIR=\"dist/public\" node dist/index.js",
+    "launch": "npm run build && npm run start",
+    "watch": "nodemon --watch src --exec 'npm run launch' --ext ts,html,css"
   },
   "keywords": [],
   "author": {
@@ -17,9 +19,13 @@
   "dependencies": {
     "@auth/express": "^0.5.5",
     "@auth/typeorm-adapter": "^2.2.0",
+    "@parcel/macros": "^2.12.0",
     "express": "^4.19.2",
     "typeorm": "^0.3.20",
     "typescript": "^5.4.5"
+  },
+  "@parcel/transformer-js": {
+    "inlineFS": false
   },
   "targets": {
     "frontend": {
