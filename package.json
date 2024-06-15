@@ -8,7 +8,7 @@
     "build": "parcel build",
     "start": "PUBLIC_DIR=\"dist/public\" node dist/index.js",
     "launch": "npm run build && npm run start",
-    "watch": "nodemon --watch src --exec 'npm run launch' --ext ts,html,css"
+    "watch": "nodemon --watch src --watch . --exec 'npm run launch' --ext ts,html,css,env.*,env"
   },
   "keywords": [],
   "author": {
@@ -20,6 +20,7 @@
     "@auth/express": "^0.5.5",
     "@auth/typeorm-adapter": "^2.2.0",
     "@parcel/macros": "^2.12.0",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "typeorm": "^0.3.20",
     "typescript": "^5.4.5"
