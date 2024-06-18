@@ -28,6 +28,7 @@ export default class SortableList extends Component {
             Plugins.SortAnimation,
         ],
         distance: 10,
+        handle: '.cursor-move',
       });
 
     if (rootElement) {
