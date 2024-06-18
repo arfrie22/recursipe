@@ -5,7 +5,7 @@ export class SignInButton extends Component {
         super();
     }
 
-    render(element: HTMLElement): void {
+    render(rootElement: HTMLElement | undefined = undefined): Element {
         const form = document.createElement("form");
         form.action = "/auth/signin";
         form.method = "GET";
@@ -16,7 +16,11 @@ export class SignInButton extends Component {
         button.innerText = "Signin";
         form.appendChild(button);
 
-        element.appendChild(form);
+        if (rootElement) {
+            rootElement.appendChild(form);
+        }
+
+        return form;
     }
 }
 
@@ -25,7 +29,7 @@ export class SignOutButton extends Component {
         super();
     }
 
-    render(element: HTMLElement): void {
+    render(rootElement: HTMLElement | undefined = undefined): Element {
         const form = document.createElement("form");
         form.action = "/auth/signout";
         form.method = "GET";
@@ -36,6 +40,10 @@ export class SignOutButton extends Component {
         button.innerText = "Signout";
         form.appendChild(button);
 
-        element.appendChild(form);
+        if (rootElement) {
+            rootElement.appendChild(form);
+        }
+
+        return form;
     }
 }

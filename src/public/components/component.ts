@@ -1,3 +1,3 @@
 export abstract class Component {
-    public render(root: HTMLElement): void {}
+    public render(rootElement: HTMLElement | undefined = undefined): Element {return document.createElement('div');}
 }

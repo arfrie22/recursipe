@@ -10,12 +10,27 @@
 <button class="btn">Hello daisyUI</button>
 
 <div id="signin"></div>
+<div id="list"></div>
 
 <script type="module" src="index.ts"></script>
 
 <script type="module">
-    import { SignInButton } from './components/auth.ts';
+    import { SignInButton, SignOutButton } from './components/auth.ts';
     const signin = new SignInButton();
+    const signout = new SignOutButton();
     signin.render(document.getElementById('signin'));
+
+    import ListItem from './components/listItem.ts';
+    import SortableList from './components/sortableList.ts';
+    import Icon from './components/icon.ts';
+    import { Home, Pencil } from 'lucide';
+
+    const list = new SortableList([
+        new ListItem(signin),
+        new ListItem(signout),
+        new ListItem(new Icon(Home)),
+        new ListItem(new Icon(Pencil)),
+    ]);
+    list.render(document.getElementById('list'));
 </script>
 </html>
