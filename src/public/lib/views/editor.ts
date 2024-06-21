@@ -14,6 +14,7 @@ type EventListeners = {
 enum View {
   Info,
   Ingredients,
+  Recursion,
   Steps,
 }
 
@@ -101,6 +102,15 @@ export default class Editor extends Component {
     ingredientsTabElement.addEventListener("click", () => {
       this.view = View.Ingredients;
       rerender();
+    });
+
+    const recursionTab = document.createElement("a");
+    recursionTab.classList.add("tab", "tab-disabled");
+    recursionTab.textContent = "Recursion";
+    const recursionTabElement = tabs.appendChild(recursionTab);
+    recursionTabElement.addEventListener("click", () => {
+    //   this.view = View.Recursion;
+    //   rerender();
     });
 
     const stepsTab = document.createElement("a");
