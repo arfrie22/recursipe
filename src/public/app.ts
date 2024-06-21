@@ -8,6 +8,43 @@ export function rerender() {
   rerenderListeners.forEach(listener => listener());
 }
 
+const demoRecipe: Recipe = {
+    info: {
+        name: "Vanilla Ice Cream",
+        description: "A very simple vanilla ice cream recipe. Based on the recipe from the amazing David Lebovitz.",
+        yield: 2,
+        yieldUnit: "pt",
+    },
+    ingredients: [
+        {
+            name: "heavy cream",
+            quantity: 2,
+            unit: "c",
+        },
+        {
+            name: "whole milk",
+            quantity: 1,
+            unit: "c",
+        },
+        {
+            name: "sugar",
+            quantity: 0.75,
+            unit: "c",
+        },
+        {
+            name: "salt",
+            quantity: 0.125,
+            unit: "tsp",
+        },
+        {
+            name: "vanilla extract",
+            quantity: 1,
+            unit: "tsp",
+        }
+    ],
+    steps: [],
+};
+
 const defaultRecipe: Recipe = {
     info: {
         name: "",
@@ -34,10 +71,10 @@ export class App {
             try {
                 this.recipes = JSON.parse(localRecipes);
             } catch (error) {
-                this.recipes = [];
+                this.recipes = [demoRecipe];
             }
         } else {
-            this.recipes = [];
+            this.recipes = [demoRecipe];
         }
 
         const localEditing = sessionStorage.getItem("editing");
