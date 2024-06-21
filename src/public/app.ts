@@ -10,10 +10,10 @@ export function rerender() {
 
 const defaultRecipe: Recipe = {
     info: {
-        name: "Vanilla Ice Cream",
-        description: "A very simple vanilla ice cream recipe. Based on the recipe from the amazing David Lebovitz.",
-        yield: 2,
-        yieldUnit: "pt",
+        name: "",
+        description: "",
+        yield: 0,
+        yieldUnit: "",
     },
     ingredients: [],
     steps: [],
@@ -34,10 +34,10 @@ export class App {
             try {
                 this.recipes = JSON.parse(localRecipes);
             } catch (error) {
-                this.recipes = [defaultRecipe];
+                this.recipes = [];
             }
         } else {
-            this.recipes = [defaultRecipe];
+            this.recipes = [];
         }
 
         const localEditing = sessionStorage.getItem("editing");
@@ -106,6 +106,13 @@ export class App {
             recipeView.on("delete", (event) => {
                 this.recipes.splice(event.detail.index, 1);
                 localStorage.setItem("recipes", JSON.stringify(this.recipes));
+                rerender();
+            });
+
+            recipeView.on("new", () => {
+                this.recipes.push(defaultRecipe);
+                localStorage.setItem("recipes", JSON.stringify(this.recipes));
+                this.edit(this.recipes.length - 1);
                 rerender();
             });
 

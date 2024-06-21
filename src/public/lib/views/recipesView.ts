@@ -40,13 +40,28 @@ export default class RecipesView extends Component {
 
   render(rootElement: HTMLElement | undefined = undefined): Element {
     const div = document.createElement("div");
-    div.classList.add(
+    div.classList.add("flex", "flex-col", "gap-4");
+    
+    const button = document.createElement("button");
+    button.classList.add("btn", "btn-primary", "w-full");
+    button.textContent = "New Recipe";
+    button.addEventListener("click", (event) => {
+      this.eventListeners.new.forEach((listener) => listener(event));
+    });
+    div.appendChild(button);
+    
+    const grid = document.createElement("div");
+    grid.classList.add(
       "grid",
+      "flex-1",
+      "center-content",
+      "justify-items-center",
       "gap-4",
       "grid-cols-1",
-      "md:grid-cols-2",
-      "lg:grid-cols-3"
+      "lg:grid-cols-2",
+      "xl:grid-cols-3"
     );
+    div.appendChild(grid);
 
     this.recipes.forEach((recipe, index) => {
       const card = new RecipeCard(recipe.info);
@@ -74,7 +89,7 @@ export default class RecipesView extends Component {
         );
       });
 
-      card.render(div);
+      card.render(grid);
     });
 
     if (rootElement) {
