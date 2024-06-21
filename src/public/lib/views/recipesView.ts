@@ -1,7 +1,5 @@
 import { ElementType, Listeners, Recipe } from "../types.js";
-import { rerender } from "../../app.js";
 import { Component } from "../components/component.js";
-import InfoTabView from "../components/infoTabView.js";
 import RecipeCard from "../components/recipeCard.js";
 
 interface CardEvent extends Event {

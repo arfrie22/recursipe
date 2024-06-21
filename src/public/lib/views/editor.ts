@@ -1,7 +1,8 @@
 import { ElementType, Listeners, Recipe } from "../types.js";
 import { rerender } from "../../app.js";
 import { Component } from "../components/component.js";
-import InfoTabView from "../components/infoTabView.js";
+import InfoTabView from "../components/editorViews/infoTabView.js";
+import IngredientsTabView from "../components/editorViews/ingredientsTabView.js";
 
 interface SaveEvent extends Event {
   detail: Recipe;
@@ -33,6 +34,7 @@ export default class Editor extends Component {
   private view: View;
 
   private infoTabView: InfoTabView;
+  private ingredientsTabView: IngredientsTabView;
 
   private recipe: Recipe;
 
@@ -60,6 +62,16 @@ export default class Editor extends Component {
       this.recipe = recipe;
     }
 
+    const save = () => {
+        this.eventListeners.save.forEach((listener) =>
+            listener(
+                new CustomEvent("save", {
+                detail: this.recipe,
+                })
+            )
+        );
+    }
+
     this.infoTabView = new InfoTabView(this.recipe.info);
     this.infoTabView.on("update", (event) => {
       this.recipe.info = event.detail;
@@ -67,13 +79,17 @@ export default class Editor extends Component {
     });
 
     this.infoTabView.on("save", (event) => {
-      this.eventListeners.save.forEach((listener) =>
-        listener(
-          new CustomEvent("save", {
-            detail: this.recipe,
-          })
-        )
-      );
+        save();
+    });
+
+    this.ingredientsTabView = new IngredientsTabView(this.recipe.ingredients);
+    this.ingredientsTabView.on("update", (event) => {
+      this.recipe.ingredients = event.detail;
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+    });
+
+    this.ingredientsTabView.on("save", (event) => {
+        save();
     });
   }
 
@@ -129,9 +145,7 @@ export default class Editor extends Component {
         break;
       case View.Ingredients:
         ingredientsTabElement.classList.add("tab-active");
-        const ingredients = document.createElement("div");
-        ingredients.textContent = "Ingredients";
-        div.appendChild(ingredients);
+        const ingredients = this.ingredientsTabView.render(div);
         break;
     case View.Recursion:
         recursionTabElement.classList.add("tab-active");

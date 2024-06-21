@@ -1,6 +1,6 @@
-import { RecipeInfo } from "../types.js";
-import { Component } from "./component.js";
-import { ElementType, Listeners } from "../types.js";
+import { RecipeInfo } from "../../types.js";
+import { Component } from "../component.js";
+import { ElementType, Listeners } from "../../types.js";
 
 interface UpdateInfoEvent extends Event {
   detail: RecipeInfo;
@@ -35,10 +35,6 @@ export default class InfoTabView extends Component {
 
   constructor(recipeInfo: RecipeInfo) {
     super();
-    this.recipeInfo = recipeInfo;
-  }
-
-  updateInfo(recipeInfo: RecipeInfo) {
     this.recipeInfo = recipeInfo;
   }
 
