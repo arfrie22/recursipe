@@ -3,7 +3,7 @@ import { Component } from "./component.js";
 import { ElementType, Listeners } from "../types.js";
 
 interface UpdateInfoEvent extends Event {
-    detail: RecipeInfo;
+  detail: RecipeInfo;
 }
 
 type EventListeners = {
@@ -19,9 +19,7 @@ export default class InfoTabView extends Component {
     save: [],
   };
 
-  on<
-    E extends keyof EventListeners
-  >(
+  on<E extends keyof EventListeners>(
     event: E,
     listener: ElementType<EventListeners[E]>
   ) {
@@ -48,10 +46,9 @@ export default class InfoTabView extends Component {
     const element = document.createElement("form");
     element.classList.add("flex", "flex-col", "gap-4");
     element.addEventListener("submit", (event) => {
-        event.preventDefault();
-        this.eventListeners.save.forEach((listener) => listener(event));
-        }
-    );
+      event.preventDefault();
+      this.eventListeners.save.forEach((listener) => listener(event));
+    });
 
     const nameInput = document.createElement("input");
     nameInput.type = "text";
@@ -59,8 +56,8 @@ export default class InfoTabView extends Component {
     nameInput.placeholder = "Name";
     nameInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
     nameInput.addEventListener("input", (event) => {
-        this.recipeInfo.name = (event.target as HTMLInputElement).value;
-        this.update();
+      this.recipeInfo.name = (event.target as HTMLInputElement).value;
+      this.update();
     });
     element.appendChild(nameInput);
 
@@ -70,8 +67,8 @@ export default class InfoTabView extends Component {
     descriptionInput.placeholder = "Description";
     descriptionInput.classList.add("textarea", "textarea-bordered", "w-full");
     descriptionInput.addEventListener("input", (event) => {
-        this.recipeInfo.description = (event.target as HTMLTextAreaElement).value;
-        this.update();
+      this.recipeInfo.description = (event.target as HTMLTextAreaElement).value;
+      this.update();
     });
     element.appendChild(descriptionInput);
 
@@ -83,8 +80,10 @@ export default class InfoTabView extends Component {
     yieldInput.placeholder = "Yield";
     yieldInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
     yieldInput.addEventListener("input", (event) => {
-        this.recipeInfo.yield = parseFloat((event.target as HTMLInputElement).value);
-        this.update();
+      this.recipeInfo.yield = parseFloat(
+        (event.target as HTMLInputElement).value
+      );
+      this.update();
     });
     element.appendChild(yieldInput);
 
@@ -92,10 +91,15 @@ export default class InfoTabView extends Component {
     yieldUnitInput.type = "text";
     yieldUnitInput.value = this.recipeInfo.yieldUnit;
     yieldUnitInput.placeholder = "Yield Unit";
-    yieldUnitInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
+    yieldUnitInput.classList.add(
+      "input",
+      "input-bordered",
+      "w-full",
+      "max-w-full"
+    );
     yieldUnitInput.addEventListener("input", (event) => {
-        this.recipeInfo.yieldUnit = (event.target as HTMLInputElement).value;
-        this.update();
+      this.recipeInfo.yieldUnit = (event.target as HTMLInputElement).value;
+      this.update();
     });
     element.appendChild(yieldUnitInput);
 
