@@ -3,6 +3,8 @@ import { rerender } from "../../app.js";
 import { Component } from "../components/component.js";
 import InfoTabView from "../components/editorViews/infoTabView.js";
 import IngredientsTabView from "../components/editorViews/ingredientsTabView.js";
+import IconButton from "../components/iconButton.js";
+import { ArrowLeft } from "lucide";
 
 interface SaveEvent extends Event {
   detail: Recipe;
@@ -10,6 +12,7 @@ interface SaveEvent extends Event {
 
 type EventListeners = {
   save: Listeners<SaveEvent>;
+  cancel: Listeners<Event>;
 };
 
 enum View {
@@ -22,6 +25,7 @@ enum View {
 export default class Editor extends Component {
   private eventListeners: EventListeners = {
     save: [],
+    cancel: [],
   };
 
   on<E extends keyof EventListeners>(
@@ -97,6 +101,12 @@ export default class Editor extends Component {
     sessionStorage.setItem("editorActiveTab", this.view.toString());
     const div = document.createElement("div");
     div.classList.add("flex", "flex-1", "h-full", "flex-col", "gap-4");
+
+    const backButton = new IconButton(ArrowLeft);
+    backButton.on("click", () => {
+      this.eventListeners.cancel.forEach((listener) => listener(new Event("click")));
+    });
+    backButton.render(div);
 
     const tabs = document.createElement("div");
     tabs.classList.add("tabs", "tabs-bordered");

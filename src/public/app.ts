@@ -120,6 +120,15 @@ export class App {
             rerender();
         });
 
+        this.editor.on("cancel", () => {
+            this.editing = false;
+            sessionStorage.setItem("editing", "false");
+            sessionStorage.removeItem("editorRecipe");
+            sessionStorage.removeItem("editorActiveTab");
+            this.editor = null;
+            rerender();
+        });
+
         rerender();
     }
     
@@ -129,6 +138,32 @@ export class App {
         const div = document.createElement("div");
         div.classList.add("flex", "flex-1", "h-full", "flex-col", "gap-4", "p-4");
         this.rootElement.appendChild(div);
+
+      const navbar = document.createElement("div");
+        navbar.classList.add("navbar", "bg-base-100");
+        div.appendChild(navbar);
+        
+        const title = document.createElement("div");
+        title.classList.add("flex-1");
+        navbar.appendChild(title);
+
+        const titleText = document.createElement("a");
+        titleText.classList.add("btn", "btn-ghost", "text-xl");
+        titleText.textContent = "Recursipe";
+        title.appendChild(titleText);
+
+        const newButton = document.createElement("button");
+        newButton.classList.add("btn", "btn-primary", "btn-square");
+        newButton.textContent = "+";
+        
+        newButton.addEventListener("click", () => {
+            this.recipes.push(defaultRecipe);
+            localStorage.setItem("recipes", JSON.stringify(this.recipes));
+            this.edit(this.recipes.length - 1);
+            rerender();
+        });
+
+        navbar.appendChild(newButton);
 
         if (this.editor) {
             this.editor.render(div);
