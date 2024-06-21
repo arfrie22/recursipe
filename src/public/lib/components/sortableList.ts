@@ -13,9 +13,11 @@ export default class SortableList extends Component {
     sort: [],
   };
 
-  on(
-    event: keyof EventListeners,
-    listener: ElementType<EventListeners[keyof EventListeners]>
+  on<
+    E extends keyof EventListeners
+  >(
+    event: E,
+    listener: ElementType<EventListeners[E]>
   ) {
     this.eventListeners[event].push(listener);
   }

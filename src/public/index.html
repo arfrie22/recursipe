@@ -6,46 +6,14 @@
 </head>
 
 <body>
-</body>
-<button class="btn">Hello daisyUI</button>
-
-<div id="signin"></div>
-<div id="list"></div>
-
-<script type="module" src="index.ts"></script>
+<div id="app" class="flex justify-center items-center h-screen">
+    <h1 class="text-4xl font-bold text-center">Hello, DaisyUI!</h1>
+</div>
 
 <script type="module">
-    import { SignInButton, SignOutButton } from './components/auth.ts';
-    const signin = new SignInButton();
-    const signout = new SignOutButton();
-    signin.render(document.getElementById('signin'));
-
-    import ListItem from './lib/components/listItem.ts';
-    import IngredientListItem from './lib/components/ingredientListItem.ts';
-    import StepListItem from './lib/components/stepListItem.ts';
-    import SortableList from './lib/components/sortableList.ts';
-    import Icon from './lib/components/icon.ts';
-    import { TimeType } from './lib/types.ts';
-    import { Home, Pencil } from 'lucide';
-
-    const list = new SortableList([
-        new IngredientListItem({
-            name: 'Apple',
-            quantity: 2,
-            unit: 'pcs',
-        }),
-        new StepListItem({
-            direction: 'Peel the apple',
-            time: 5,
-            timeType: TimeType.COOKING,
-        }),
-        new ListItem(signout),
-        new ListItem(new Icon(Home)),
-        new ListItem(new Icon(Pencil)),
-    ]);
-
-    const listElem = document.getElementById('list');
-    listElem.innerHTML = '';
-    list.render(listElem);
+    import { App } from './lib/components/app.ts';
+    const app = new App(document.getElementById('app'));
+    app.render();
 </script>
+</body>
 </html>

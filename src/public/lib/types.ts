@@ -16,6 +16,13 @@ export interface Step {
     timeType: TimeType;
 }
 
+export interface RecipeInfo {
+    name: string;
+    description: string;
+    yield: number;
+    yieldUnit: string;
+}
+
 export type ValueOf<T> = T[keyof T];
 export type ElementType<T> = T extends Array<infer V> ? V : never;
 export type Listeners<T> = ((event: T)=>void)[];

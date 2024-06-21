@@ -43,9 +43,11 @@ export default class IngredientListItem extends Component {
     delete: [],
   };
 
-  on(
-    event: keyof EventListeners,
-    listener: ElementType<EventListeners[keyof EventListeners]>
+  on<
+    E extends keyof EventListeners
+  >(
+    event: E,
+    listener: ElementType<EventListeners[E]>
   ) {
     this.eventListeners[event].push(listener);
   }
@@ -70,7 +72,7 @@ export default class IngredientListItem extends Component {
         listener(new Event("delete"))
       );
     });
-    
+
     return element;
   }
 }
