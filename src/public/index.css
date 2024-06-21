@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.draggable-source--is-dragging {
+    opacity: 0.5;
+    border-color: oklch(var(--s));
+    border-style: dashed;
+    border-width: 2px;
+    border-radius: inherit;
+}

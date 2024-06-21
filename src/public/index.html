@@ -20,17 +20,32 @@
     const signout = new SignOutButton();
     signin.render(document.getElementById('signin'));
 
-    import ListItem from './components/listItem.ts';
-    import SortableList from './components/sortableList.ts';
-    import Icon from './components/icon.ts';
+    import ListItem from './lib/components/listItem.ts';
+    import IngredientListItem from './lib/components/ingredientListItem.ts';
+    import StepListItem from './lib/components/stepListItem.ts';
+    import SortableList from './lib/components/sortableList.ts';
+    import Icon from './lib/components/icon.ts';
+    import { TimeType } from './lib/types.ts';
     import { Home, Pencil } from 'lucide';
 
     const list = new SortableList([
-        new ListItem(signin),
+        new IngredientListItem({
+            name: 'Apple',
+            quantity: 2,
+            unit: 'pcs',
+        }),
+        new StepListItem({
+            direction: 'Peel the apple',
+            time: 5,
+            timeType: TimeType.COOKING,
+        }),
         new ListItem(signout),
         new ListItem(new Icon(Home)),
         new ListItem(new Icon(Pencil)),
     ]);
-    list.render(document.getElementById('list'));
+
+    const listElem = document.getElementById('list');
+    listElem.innerHTML = '';
+    list.render(listElem);
 </script>
 </html>
