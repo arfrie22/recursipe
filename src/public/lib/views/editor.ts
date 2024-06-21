@@ -133,6 +133,11 @@ export default class Editor extends Component {
         ingredients.textContent = "Ingredients";
         div.appendChild(ingredients);
         break;
+    case View.Recursion:
+        recursionTabElement.classList.add("tab-active");
+        const recursion = document.createElement("div");
+        recursion.textContent = "Recursion";
+        div.appendChild(recursion);
       case View.Steps:
         stepsTabElement.classList.add("tab-active");
         const steps = document.createElement("div");
