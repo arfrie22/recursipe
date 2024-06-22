@@ -29,7 +29,8 @@ class StepListItemInner extends Component {
     const hours = Math.floor(this.step.time / 3600);
     const hoursString = hours > 0 ? `${hours}:` : "";
     const minutes = Math.floor((this.step.time % 3600) / 60);
-    const minutesString = hours > 0 ? minutes.toString().padStart(2, "0") : minutes.toString();
+    const minutesString =
+      hours > 0 ? minutes.toString().padStart(2, "0") : minutes.toString();
     const seconds = this.step.time % 60;
     const secondsString = seconds.toString().padStart(2, "0");
     timeValue.textContent = `${hoursString}${minutesString}:${secondsString}`;
@@ -72,9 +73,7 @@ export default class StepListItem extends Component {
     delete: [],
   };
 
-  on<
-    E extends keyof EventListeners
-  >(
+  on<E extends keyof EventListeners>(
     event: E,
     listener: ElementType<EventListeners[E]>
   ) {
@@ -100,7 +99,7 @@ export default class StepListItem extends Component {
         listener(new Event("delete"))
       );
     });
-    
+
     return element;
   }
 }

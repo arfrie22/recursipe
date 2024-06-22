@@ -6,15 +6,16 @@
 </head>
 
 <body>
-<div id="app" class="flex justify-center items-center h-screen">
-    <h1 class="text-4xl font-bold text-center">Loading...</h1>
-    <span class="loading loading-dots loading-lg"></span>
-</div>
+    <div id="app" class="flex justify-center items-center h-screen">
+        <h1 class="text-4xl font-bold text-center">Loading...</h1>
+        <span class="loading loading-dots loading-lg"></span>
+    </div>
 
-<script type="module">
-    import { App } from './app.ts';
-    const app = new App(document.getElementById('app'));
-    app.render();
-</script>
+    <script type="module">
+        import { App } from './app.ts';
+        const app = new App(document.getElementById('app'));
+        app.render();
+    </script>
 </body>
+
 </html>

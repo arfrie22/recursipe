@@ -39,7 +39,7 @@ export default class RecipesView extends Component {
   render(rootElement: HTMLElement | undefined = undefined): Element {
     const div = document.createElement("div");
     div.classList.add("flex", "flex-col", "gap-4");
-    
+
     const grid = document.createElement("div");
     grid.classList.add(
       "grid",

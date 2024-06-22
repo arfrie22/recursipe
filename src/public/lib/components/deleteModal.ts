@@ -11,9 +11,7 @@ export default class DeleteModal {
     cancel: [],
   };
 
-  on<
-    E extends keyof EventListeners
-  >(
+  on<E extends keyof EventListeners>(
     event: E,
     listener: ElementType<EventListeners[E]>
   ) {
@@ -56,11 +54,11 @@ export default class DeleteModal {
     const cancelButton = document.createElement("button");
     cancelButton.classList.add("btn", "btn-outline", "flex-1");
     cancelButton.textContent = "Cancel";
-    dialogForm.appendChild(cancelButton)
+    dialogForm.appendChild(cancelButton);
     cancelButton.addEventListener("click", (event) => {
       this.eventListeners.cancel.forEach((listener) => listener(event));
     });
-    
+
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("btn", "btn-error", "flex-1");
     deleteButton.textContent = "Delete";

@@ -16,9 +16,7 @@ export default class ListItem extends Component {
     delete: [],
   };
 
-  on<
-    E extends keyof EventListeners
-  >(
+  on<E extends keyof EventListeners>(
     event: E,
     listener: ElementType<EventListeners[E]>
   ) {
@@ -67,9 +65,9 @@ export default class ListItem extends Component {
     const deleteButton = new IconButton(Delete).render(iconsDiv);
     interactionDiv.appendChild(deleteButton);
     deleteButton.addEventListener("click", (event) => {
-        this.eventListeners.delete.forEach((listener) => {
-            listener(event);
-        });
+      this.eventListeners.delete.forEach((listener) => {
+        listener(event);
+      });
     });
 
     const gripDiv = document.createElement("div");

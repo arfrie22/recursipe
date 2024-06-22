@@ -67,14 +67,14 @@ export default class Editor extends Component {
     }
 
     const save = () => {
-        this.eventListeners.save.forEach((listener) =>
-            listener(
-                new CustomEvent("save", {
-                detail: this.recipe,
-                })
-            )
-        );
-    }
+      this.eventListeners.save.forEach((listener) =>
+        listener(
+          new CustomEvent("save", {
+            detail: this.recipe,
+          })
+        )
+      );
+    };
 
     this.infoTabView = new InfoTabView(this.recipe.info);
     this.infoTabView.on("update", (event) => {
@@ -83,7 +83,7 @@ export default class Editor extends Component {
     });
 
     this.infoTabView.on("save", (event) => {
-        save();
+      save();
     });
 
     this.ingredientsTabView = new IngredientsTabView(this.recipe.ingredients);
@@ -93,7 +93,7 @@ export default class Editor extends Component {
     });
 
     this.ingredientsTabView.on("save", (event) => {
-        save();
+      save();
     });
 
     this.stepsTabView = new StepsTabView(this.recipe.steps);
@@ -103,7 +103,7 @@ export default class Editor extends Component {
     });
 
     this.stepsTabView.on("save", (event) => {
-        save();
+      save();
     });
   }
 
@@ -139,8 +139,8 @@ export default class Editor extends Component {
     recursionTab.textContent = "Recursion";
     const recursionTabElement = tabs.appendChild(recursionTab);
     recursionTabElement.addEventListener("click", () => {
-    //   this.view = View.Recursion;
-    //   rerender();
+      //   this.view = View.Recursion;
+      //   rerender();
     });
 
     const stepsTab = document.createElement("a");
@@ -161,7 +161,7 @@ export default class Editor extends Component {
         ingredientsTabElement.classList.add("tab-active");
         const ingredients = this.ingredientsTabView.render(div);
         break;
-    case View.Recursion:
+      case View.Recursion:
         recursionTabElement.classList.add("tab-active");
         const recursion = document.createElement("div");
         recursion.textContent = "Recursion";

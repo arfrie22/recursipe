@@ -61,14 +61,18 @@ export default class IngredientsTabView extends Component {
     });
 
     const deleteIngredient = () => {
-      return deleteModal.show(this.ingredients[this.activeDeleteIndex]?.name || "", `Are you sure you want to delete ${this.ingredients[this.activeDeleteIndex]?.name}?`);
-    }
+      return deleteModal.show(
+        this.ingredients[this.activeDeleteIndex]?.name || "",
+        `Are you sure you want to delete ${
+          this.ingredients[this.activeDeleteIndex]?.name
+        }?`
+      );
+    };
 
     if (this.deleteOpen) {
       console.log("delete");
       deleteIngredient();
     }
-
 
     document.getElementById("ingredient-dialog")?.remove();
 
@@ -78,7 +82,15 @@ export default class IngredientsTabView extends Component {
     document.body.appendChild(dialog);
 
     const dialogBox = document.createElement("div");
-    dialogBox.classList.add("modal-box", "w-11/12", "max-w-5xl", "flex", "flex-col", "gap-4", "p-4");
+    dialogBox.classList.add(
+      "modal-box",
+      "w-11/12",
+      "max-w-5xl",
+      "flex",
+      "flex-col",
+      "gap-4",
+      "p-4"
+    );
     dialog.appendChild(dialogBox);
 
     let editIndex = 0;
@@ -125,19 +137,19 @@ export default class IngredientsTabView extends Component {
     quantityInput.step = "any";
     quantityInput.value = "0";
     quantityInput.placeholder = "Quantity";
-    quantityInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
+    quantityInput.classList.add(
+      "input",
+      "input-bordered",
+      "w-full",
+      "max-w-full"
+    );
     dialogContent.appendChild(quantityInput);
 
     const unitInput = document.createElement("input");
     unitInput.type = "text";
     unitInput.value = "";
     unitInput.placeholder = "Unit";
-    unitInput.classList.add(
-      "input",
-      "input-bordered",
-      "w-full",
-      "max-w-full"
-    );
+    unitInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
     dialogContent.appendChild(unitInput);
 
     const dialogAction = document.createElement("div");
@@ -148,7 +160,7 @@ export default class IngredientsTabView extends Component {
     cancelButton.classList.add("btn", "btn-outline", "flex-1");
     cancelButton.textContent = "Cancel";
     dialogAction.appendChild(cancelButton);
-    
+
     const addButton = document.createElement("button");
     addButton.textContent = "Add";
     addButton.type = "submit";
@@ -167,7 +179,7 @@ export default class IngredientsTabView extends Component {
       dialog.showModal();
     });
     element.appendChild(createButton);
-    
+
     const indexs = this.ingredients.map((ingredient, index) => index);
     const ingredients = this.ingredients.map((ingredient, index) => {
       const item = new IngredientListItem(ingredient);
@@ -196,7 +208,7 @@ export default class IngredientsTabView extends Component {
 
       const index = indexs.splice(event.oldIndex, 1)[0];
       indexs.splice(event.newIndex, 0, index);
-      
+
       this.update();
     });
     sortableList.render(element);
@@ -208,7 +220,7 @@ export default class IngredientsTabView extends Component {
       this.eventListeners.save.forEach((listener) => listener(event));
     });
     element.appendChild(saveButton);
-    
+
     if (rootElement) {
       rootElement.appendChild(element);
     }
