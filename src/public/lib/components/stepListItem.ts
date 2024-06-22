@@ -1,7 +1,9 @@
-import { Step } from "../types.js";
+import { Step, TimeType } from "../types.js";
 import { Component } from "./component.js";
 import ListItem from "./listItem.js";
 import { ElementType, Listeners } from "../types.js";
+import Icon from "./icon.js";
+import { Carrot, CookingPot, IconNode, Timer } from "lucide";
 
 class StepListItemInner extends Component {
   private step: Step;
@@ -18,9 +20,36 @@ class StepListItemInner extends Component {
     name.textContent = this.step.direction;
     element.appendChild(name);
 
-    const quantity = document.createElement("span");
-    quantity.textContent = this.step.time.toString();
-    element.appendChild(quantity);
+    const time = document.createElement("div");
+    time.classList.add("flex", "gap-4");
+    element.appendChild(time);
+
+    const timeValue = document.createElement("span");
+    // Time is in seconds, convert to xx:xx format or xx:xx:xx format
+    const hours = Math.floor(this.step.time / 3600);
+    const hoursString = hours > 0 ? `${hours}:` : "";
+    const minutes = Math.floor((this.step.time % 3600) / 60);
+    const minutesString = hours > 0 ? minutes.toString().padStart(2, "0") : minutes.toString();
+    const seconds = this.step.time % 60;
+    const secondsString = seconds.toString().padStart(2, "0");
+    timeValue.textContent = `${hoursString}${minutesString}:${secondsString}`;
+    time.appendChild(timeValue);
+
+    let cookingIcon: IconNode;
+    switch (this.step.timeType) {
+      case TimeType.Cooking:
+        cookingIcon = CookingPot;
+        break;
+      case TimeType.Preparation:
+        cookingIcon = Carrot;
+        break;
+      case TimeType.Waiting:
+        cookingIcon = Timer;
+        break;
+    }
+
+    const icon = new Icon(cookingIcon);
+    icon.render(time);
 
     if (rootElement) {
       rootElement.appendChild(element);
