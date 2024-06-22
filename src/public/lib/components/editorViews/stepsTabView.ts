@@ -195,6 +195,7 @@ export default class StepsTabView extends Component {
     });
     element.appendChild(createButton);
 
+    // Save index list to allow the buttons to find the correct index after sorting
     const indexs = this.steps.map((step, index) => index);
     const steps = this.steps.map((step, index) => {
       const item = new StepListItem(step);

@@ -53,6 +53,7 @@ export default class RecipesView extends Component {
     );
     div.appendChild(grid);
 
+    // Add new recipe card with event listeners
     this.recipes.forEach((recipe, index) => {
       const card = new RecipeCard(recipe.info);
       card.on("edit", (event) => {

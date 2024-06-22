@@ -88,6 +88,7 @@ export class App {
   constructor(rootElement: HTMLElement) {
     this.rootElement = rootElement;
 
+    // Load recipes from local storage
     const localRecipes = localStorage.getItem("recipes");
     if (localRecipes) {
       try {
@@ -99,12 +100,14 @@ export class App {
       this.recipes = [demoRecipe];
     }
 
+    // Get editing state from session storage
     const localEditing = sessionStorage.getItem("editing");
     this.editing = localEditing === "true";
 
     const localEditNew = sessionStorage.getItem("editNew");
     this.editNew = localEditNew === "true";
 
+    // Get active recipe index from session storage
     const localActiveRecipeIndex = sessionStorage.getItem("activeRecipeIndex");
     if (localActiveRecipeIndex) {
       this.activeIndex = parseInt(localActiveRecipeIndex);
@@ -117,6 +120,7 @@ export class App {
 
     this.editor = null;
 
+    // If editing, set up the editor
     if (this.editing) {
       this.edit(this.activeIndex);
     } else {
@@ -128,6 +132,7 @@ export class App {
   }
 
   private edit(index: number) {
+    // Set up the editor to edit the recipe at the given index
     this.activeIndex = index;
     this.editing = true;
     sessionStorage.setItem("activeRecipeIndex", this.activeIndex.toString());
@@ -186,6 +191,7 @@ export class App {
     titleText.textContent = "Recursipe";
     title.appendChild(titleText);
 
+    // If editing, show a cancel button otherwise show a new button to add a new recipe
     if (this.editing) {
       const cancelButton = new IconButton(ArrowLeft);
       cancelButton.on("click", () => {
@@ -218,11 +224,13 @@ export class App {
       newButton.render(navbar);
     }
 
+    // If editing, render the editor otherwise render the recipes view
     if (this.editor) {
       this.editor.render(div);
     } else {
       const recipeView = new RecipesView(this.recipes);
 
+      // Set up event listeners for the recipes view
       recipeView.on("edit", (event) => {
         this.editNew = false;
         this.edit(event.detail.index);

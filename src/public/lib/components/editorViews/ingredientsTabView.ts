@@ -180,6 +180,7 @@ export default class IngredientsTabView extends Component {
     });
     element.appendChild(createButton);
 
+    // Save index list to allow the buttons to find the correct index after sorting
     const indexs = this.ingredients.map((ingredient, index) => index);
     const ingredients = this.ingredients.map((ingredient, index) => {
       const item = new IngredientListItem(ingredient);

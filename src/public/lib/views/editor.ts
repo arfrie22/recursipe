@@ -45,6 +45,7 @@ export default class Editor extends Component {
   constructor(recipe: Recipe) {
     super();
 
+    // Load active tab from session storage
     const localActiveTab = sessionStorage.getItem("editorActiveTab");
     if (localActiveTab) {
       this.view = parseInt(localActiveTab);
@@ -55,6 +56,7 @@ export default class Editor extends Component {
       this.view = View.Info;
     }
 
+    // Load recipe from session storage
     const localRecipe = sessionStorage.getItem("editorRecipe");
     if (localRecipe) {
       try {
@@ -66,6 +68,7 @@ export default class Editor extends Component {
       this.recipe = recipe;
     }
 
+    // Save recipe to session storage by sending a save event
     const save = () => {
       this.eventListeners.save.forEach((listener) =>
         listener(
@@ -76,6 +79,7 @@ export default class Editor extends Component {
       );
     };
 
+    // Set up tab views and event listeners
     this.infoTabView = new InfoTabView(this.recipe.info);
     this.infoTabView.on("update", (event) => {
       this.recipe.info = event.detail;
@@ -112,6 +116,7 @@ export default class Editor extends Component {
     const div = document.createElement("div");
     div.classList.add("flex", "flex-1", "h-full", "flex-col", "gap-4");
 
+    // Tabs
     const tabs = document.createElement("div");
     tabs.classList.add("tabs", "tabs-bordered");
     div.appendChild(tabs);
@@ -139,6 +144,7 @@ export default class Editor extends Component {
     recursionTab.textContent = "Recursion";
     const recursionTabElement = tabs.appendChild(recursionTab);
     recursionTabElement.addEventListener("click", () => {
+      // Not yet implemented
       //   this.view = View.Recursion;
       //   rerender();
     });
@@ -152,6 +158,7 @@ export default class Editor extends Component {
       rerender();
     });
 
+    // Render active tab
     switch (this.view) {
       case View.Info:
         infoTabElement.classList.add("tab-active");
