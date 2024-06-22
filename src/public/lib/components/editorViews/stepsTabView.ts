@@ -1,4 +1,4 @@
-import { Step } from "../../types.js";
+import { Step, TimeType } from "../../types.js";
 import { Component } from "../component.js";
 import { ElementType, Listeners } from "../../types.js";
 import SortableList from "../sortableList.js";
@@ -95,9 +95,9 @@ export default class StepsTabView extends Component {
     dialogContent.addEventListener("submit", (event) => {
       event.preventDefault();
       const tempStep: Step = {
-        name: nameInput.value,
-        quantity: parseFloat(quantityInput.value) || 0,
-        unit: unitInput.value,
+        time: parseFloat(timeInput.value) || 0,
+        timeType: timeTypeSelect.value as TimeType || TimeType.Cooking,
+        direction: directionInput.value,
       };
 
       if (editing) {
@@ -112,33 +112,40 @@ export default class StepsTabView extends Component {
     });
     dialogBox.appendChild(dialogContent);
 
-    const nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.value = "";
-    nameInput.placeholder = "Name";
-    nameInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
-    dialogContent.appendChild(nameInput);
+    const timeInput = document.createElement("input");
+    timeInput.type = "number";
+    timeInput.min = "0";
+    timeInput.step = "any";
+    timeInput.value = "0";
+    timeInput.placeholder = "Time";
+    timeInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
+    dialogContent.appendChild(timeInput);
 
-    const quantityInput = document.createElement("input");
-    quantityInput.type = "number";
-    quantityInput.min = "0";
-    quantityInput.step = "any";
-    quantityInput.value = "0";
-    quantityInput.placeholder = "Quantity";
-    quantityInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
-    dialogContent.appendChild(quantityInput);
+    const timeTypeSelect = document.createElement("select");
+    timeTypeSelect.classList.add("select", "select-bordered", "w-full", "max-w-full");
+    dialogContent.appendChild(timeTypeSelect);
 
-    const unitInput = document.createElement("input");
-    unitInput.type = "text";
-    unitInput.value = "";
-    unitInput.placeholder = "Unit";
-    unitInput.classList.add(
-      "input",
-      "input-bordered",
-      "w-full",
-      "max-w-full"
-    );
-    dialogContent.appendChild(unitInput);
+    const defaultTimeTypeOption = document.createElement("option");
+    defaultTimeTypeOption.value = "";
+    defaultTimeTypeOption.disabled = true;
+    defaultTimeTypeOption.textContent = "Select Time Type";
+    timeTypeSelect.appendChild(defaultTimeTypeOption);
+
+    const timeTypeOptions = [TimeType.Cooking, TimeType.Preparation, TimeType.Waiting];
+    timeTypeOptions.forEach((option) => {
+      const timeTypeOption = document.createElement("option");
+      timeTypeOption.value = option;
+      timeTypeOption.textContent = option;
+      timeTypeSelect.appendChild(timeTypeOption);
+    });
+
+
+    const directionInput = document.createElement("textarea");
+    directionInput.rows = 4;
+    directionInput.value = "";
+    directionInput.placeholder = "Description";
+    directionInput.classList.add("textarea", "textarea-bordered", "w-full");
+    dialogContent.appendChild(directionInput);
 
     const dialogAction = document.createElement("div");
     dialogAction.classList.add("modal-action", "flex", "gap-4");
@@ -161,9 +168,9 @@ export default class StepsTabView extends Component {
     createButton.addEventListener("click", (event) => {
       editing = false;
       addButton.textContent = "Add";
-      nameInput.value = "";
-      quantityInput.value = "0";
-      unitInput.value = "";
+      timeInput.value = "0";
+      timeTypeSelect.value = "";
+      directionInput.value = "";
       dialog.showModal();
     });
     element.appendChild(createButton);
@@ -181,9 +188,9 @@ export default class StepsTabView extends Component {
         editIndex = indexs.indexOf(index);
         editing = true;
         addButton.textContent = "Save";
-        nameInput.value = step.name;
-        quantityInput.value = step.quantity.toString();
-        unitInput.value = step.unit;
+        timeInput.value = step.time.toString();
+        timeTypeSelect.value = step.timeType;
+        directionInput.value = step.direction;
         dialog.showModal();
       });
 
