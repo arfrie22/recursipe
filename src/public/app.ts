@@ -1,6 +1,6 @@
 import { ArrowLeft, Plus } from "lucide";
 import IconButton from "./lib/components/iconButton.js";
-import { Recipe } from "./lib/types.js";
+import { Recipe, TimeType } from "./lib/types.js";
 import Editor from "./lib/views/editor.js";
 import RecipesView from "./lib/views/recipesView.js";
 
@@ -44,7 +44,23 @@ const demoRecipe: Recipe = {
             unit: "tsp",
         }
     ],
-    steps: [],
+    steps: [
+        {
+            direction: "In a medium saucepan, warm 1 cup of the cream with the sugar, and salt till simmering.",
+            time: 60*5,
+            timeType: TimeType.Cooking,
+        },
+        {
+            direction: "Turn off the heat and let steep for 1 hour.",
+            time: 60*60,
+            timeType: TimeType.Waiting,
+        },
+        {
+            direction: "In a medium bowl, pour the remaining 1 cup of cream and set a mesh strainer on top.",
+            time: 10,
+            timeType: TimeType.Preparation,
+        },
+    ],
 };
 
 const defaultRecipe: Recipe = {

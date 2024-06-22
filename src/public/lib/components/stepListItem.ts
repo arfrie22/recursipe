@@ -35,7 +35,7 @@ type EventListeners = {
   delete: Listeners<Event>;
 };
 
-export default class IngredientListItem extends Component {
+export default class StepListItem extends Component {
   private step: Step;
 
   private eventListeners: EventListeners = {

@@ -3,6 +3,7 @@ import { rerender } from "../../app.js";
 import { Component } from "../components/component.js";
 import InfoTabView from "../components/editorViews/infoTabView.js";
 import IngredientsTabView from "../components/editorViews/ingredientsTabView.js";
+import StepsTabView from "../components/editorViews/stepsTabView.js";
 
 interface SaveEvent extends Event {
   detail: Recipe;
@@ -37,6 +38,7 @@ export default class Editor extends Component {
 
   private infoTabView: InfoTabView;
   private ingredientsTabView: IngredientsTabView;
+  private stepsTabView: StepsTabView;
 
   private recipe: Recipe;
 
@@ -91,6 +93,16 @@ export default class Editor extends Component {
     });
 
     this.ingredientsTabView.on("save", (event) => {
+        save();
+    });
+
+    this.stepsTabView = new StepsTabView(this.recipe.steps);
+    this.stepsTabView.on("update", (event) => {
+      this.recipe.steps = event.detail;
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+    });
+
+    this.stepsTabView.on("save", (event) => {
         save();
     });
   }
@@ -156,9 +168,7 @@ export default class Editor extends Component {
         div.appendChild(recursion);
       case View.Steps:
         stepsTabElement.classList.add("tab-active");
-        const steps = document.createElement("div");
-        steps.textContent = "Steps";
-        div.appendChild(steps);
+        const steps = this.stepsTabView.render(div);
         break;
     }
 
