@@ -19,11 +19,6 @@ export default class IngredientsTabView extends Component {
   private ingredients: Ingredient[];
   private activeDeleteIndex: number = 0;
   private deleteOpen: boolean = false;
-  private tempIngredient: Ingredient = {
-    name: "",
-    quantity: 0,
-    unit: "",
-  };
 
   private eventListeners: EventListeners = {
     update: [],
@@ -74,16 +69,20 @@ export default class IngredientsTabView extends Component {
       deleteIngredient();
     }
 
+
+    document.getElementById("ingredient-dialog")?.remove();
+
     const dialog = document.createElement("dialog");
     dialog.classList.add("modal");
+    dialog.id = "ingredient-dialog";
     document.body.appendChild(dialog);
-    dialog.addEventListener("close", () => {
-      dialog.remove();
-    });
 
     const dialogBox = document.createElement("div");
-    dialogBox.classList.add("modal-box", "w-11/12", "max-w-5xl");
+    dialogBox.classList.add("modal-box", "w-11/12", "max-w-5xl", "flex", "flex-col", "gap-4", "p-4");
     dialog.appendChild(dialogBox);
+
+    let editIndex = 0;
+    let editing = false;
 
     const dialogTitle = document.createElement("h3");
     dialogTitle.classList.add("font-bold", "text-lg");
@@ -91,10 +90,25 @@ export default class IngredientsTabView extends Component {
     dialogBox.appendChild(dialogTitle);
 
     const dialogContent = document.createElement("form");
+    dialogContent.method = "dialog";
     dialogContent.classList.add("flex", "flex-col", "gap-4");
     dialogContent.addEventListener("submit", (event) => {
       event.preventDefault();
-      this.eventListeners.save.forEach((listener) => listener(event));
+      const tempIngredient: Ingredient = {
+        name: nameInput.value,
+        quantity: parseFloat(quantityInput.value) || 0,
+        unit: unitInput.value,
+      };
+
+      if (editing) {
+        this.ingredients[editIndex] = tempIngredient;
+        editing = false;
+      } else {
+        this.ingredients.push(tempIngredient);
+      }
+
+      this.update();
+      rerender();
     });
     dialogBox.appendChild(dialogContent);
 
@@ -103,9 +117,6 @@ export default class IngredientsTabView extends Component {
     nameInput.value = "";
     nameInput.placeholder = "Name";
     nameInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
-    // nameInput.addEventListener("input", (event) => {
-    //   this.recipeInfo.name = (event.target as HTMLInputElement).value;
-    // });
     dialogContent.appendChild(nameInput);
 
     const quantityInput = document.createElement("input");
@@ -115,12 +126,6 @@ export default class IngredientsTabView extends Component {
     quantityInput.value = "0";
     quantityInput.placeholder = "Quantity";
     quantityInput.classList.add("input", "input-bordered", "w-full", "max-w-full");
-    // yieldInput.addEventListener("input", (event) => {
-    //   this.recipeInfo.yield = parseFloat(
-    //     (event.target as HTMLInputElement).value
-    //   );
-    //   this.update();
-    // });
     dialogContent.appendChild(quantityInput);
 
     const unitInput = document.createElement("input");
@@ -133,45 +138,32 @@ export default class IngredientsTabView extends Component {
       "w-full",
       "max-w-full"
     );
-    // yieldUnitInput.addEventListener("input", (event) => {
-    //   this.recipeInfo.yieldUnit = (event.target as HTMLInputElement).value;
-    //   this.update();
-    // });
     dialogContent.appendChild(unitInput);
 
-    const addButton = document.createElement("button");
-    addButton.type = "submit";
-    addButton.textContent = "Add";
-    addButton.classList.add("btn", "btn-primary");
-    dialogContent.appendChild(addButton);
-
-
     const dialogAction = document.createElement("div");
-    dialogAction.classList.add("modal-action");
+    dialogAction.classList.add("modal-action", "flex", "gap-4");
     dialogContent.appendChild(dialogAction);
-
-    const dialogForm = document.createElement("form");
-    dialogForm.classList.add("flex", "gap-4", "w-full");
-    dialogForm.method = "dialog";
-    dialogAction.appendChild(dialogForm);
 
     const cancelButton = document.createElement("button");
     cancelButton.classList.add("btn", "btn-outline", "flex-1");
     cancelButton.textContent = "Cancel";
-    dialogForm.appendChild(cancelButton);
+    dialogAction.appendChild(cancelButton);
     
-    const deleteButton = document.createElement("button");
-    deleteButton.classList.add("btn", "btn-error", "flex-1");
-    deleteButton.textContent = "Add";
-    dialogForm.appendChild(deleteButton);
-    deleteButton.addEventListener("click", (event) => {
-      console.log("delete");
-    });
+    const addButton = document.createElement("button");
+    addButton.textContent = "Add";
+    addButton.type = "submit";
+    addButton.classList.add("btn", "btn-primary", "flex-1");
+    dialogAction.appendChild(addButton);
 
     const createButton = document.createElement("button");
     createButton.classList.add("btn", "btn-secondary", "w-full", "max-w-xl");
     createButton.textContent = "Add Ingredient";
     createButton.addEventListener("click", (event) => {
+      editing = false;
+      addButton.textContent = "Add";
+      nameInput.value = "";
+      quantityInput.value = "0";
+      unitInput.value = "";
       dialog.showModal();
     });
     element.appendChild(createButton);
@@ -183,6 +175,16 @@ export default class IngredientsTabView extends Component {
         this.activeDeleteIndex = indexs.indexOf(index);
         this.deleteOpen = true;
         deleteIngredient();
+      });
+
+      item.on("edit", (event) => {
+        editIndex = indexs.indexOf(index);
+        editing = true;
+        addButton.textContent = "Save";
+        nameInput.value = ingredient.name;
+        quantityInput.value = ingredient.quantity.toString();
+        unitInput.value = ingredient.unit;
+        dialog.showModal();
       });
 
       return item;

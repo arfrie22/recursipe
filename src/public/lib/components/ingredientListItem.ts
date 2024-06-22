@@ -12,15 +12,19 @@ class IngredientListItemInner extends Component {
 
   render(rootElement: HTMLElement | undefined = undefined): Element {
     const element = document.createElement("div");
-    element.classList.add("flex", "items-center", "justify-between");
-
-    const name = document.createElement("span");
-    name.textContent = this.ingredient.name;
-    element.appendChild(name);
+    element.classList.add("flex", "items-center", "gap-2");
 
     const quantity = document.createElement("span");
     quantity.textContent = this.ingredient.quantity.toString();
     element.appendChild(quantity);
+
+    const unit = document.createElement("span");
+    unit.textContent = this.ingredient.unit;
+    element.appendChild(unit);
+
+    const name = document.createElement("span");
+    name.textContent = this.ingredient.name;
+    element.appendChild(name);
 
     if (rootElement) {
       rootElement.appendChild(element);
