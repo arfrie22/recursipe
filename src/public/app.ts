@@ -1,3 +1,5 @@
+import { ArrowLeft, Plus } from "lucide";
+import IconButton from "./lib/components/iconButton.js";
 import { Recipe } from "./lib/types.js";
 import Editor from "./lib/views/editor.js";
 import RecipesView from "./lib/views/recipesView.js";
@@ -61,6 +63,7 @@ export class App {
     private recipes: Recipe[];
     private activeIndex: number;
     private editing: boolean;
+    private editNew: boolean;
     private editor: Editor | null;
 
     constructor(rootElement: HTMLElement) {
@@ -79,6 +82,9 @@ export class App {
 
         const localEditing = sessionStorage.getItem("editing");
         this.editing = localEditing === "true";
+
+        const localEditNew = sessionStorage.getItem("editNew");
+        this.editNew = localEditNew === "true";
 
         const localActiveRecipeIndex = sessionStorage.getItem("activeRecipeIndex");
         if (localActiveRecipeIndex) {
@@ -107,6 +113,7 @@ export class App {
         this.editing = true;
         sessionStorage.setItem("activeRecipeIndex", this.activeIndex.toString());
         sessionStorage.setItem("editing", "true");
+        sessionStorage.setItem("editNew", this.editNew ? "true" : "false");
         this.editor = new Editor(this.recipes[this.activeIndex]);
 
         this.editor.on("save", (event) => {
@@ -123,8 +130,16 @@ export class App {
         this.editor.on("cancel", () => {
             this.editing = false;
             sessionStorage.setItem("editing", "false");
+            sessionStorage.setItem("editNew", "false");
             sessionStorage.removeItem("editorRecipe");
             sessionStorage.removeItem("editorActiveTab");
+
+            if (this.editNew) {
+                this.recipes.pop();
+                this.editNew = false;
+                localStorage.setItem("recipes", JSON.stringify(this.recipes));
+            }
+
             this.editor = null;
             rerender();
         });
@@ -139,7 +154,7 @@ export class App {
         div.classList.add("flex", "flex-1", "h-full", "flex-col", "gap-4", "p-4");
         this.rootElement.appendChild(div);
 
-      const navbar = document.createElement("div");
+        const navbar = document.createElement("div");
         navbar.classList.add("navbar", "bg-base-100");
         div.appendChild(navbar);
         
@@ -152,18 +167,37 @@ export class App {
         titleText.textContent = "Recursipe";
         title.appendChild(titleText);
 
-        const newButton = document.createElement("button");
-        newButton.classList.add("btn", "btn-primary", "btn-square");
-        newButton.textContent = "+";
-        
-        newButton.addEventListener("click", () => {
-            this.recipes.push(defaultRecipe);
-            localStorage.setItem("recipes", JSON.stringify(this.recipes));
-            this.edit(this.recipes.length - 1);
-            rerender();
-        });
+        if (this.editing) {
+            const cancelButton = new IconButton(ArrowLeft);
+            cancelButton.on("click", () => {
+                this.editing = false;
+                sessionStorage.setItem("editing", "false");
+                sessionStorage.setItem("editNew", "false");
+                sessionStorage.removeItem("editorRecipe");
+                sessionStorage.removeItem("editorActiveTab");
+                this.editor = null;
 
-        navbar.appendChild(newButton);
+                if (this.editNew) {
+                    this.recipes.pop();
+                    this.editNew = false;
+                    localStorage.setItem("recipes", JSON.stringify(this.recipes));
+                }
+                rerender();
+            });
+
+            cancelButton.render(navbar);
+        } else {
+            const newButton = new IconButton(Plus);
+            newButton.on("click", () => {
+                this.recipes.push(defaultRecipe);
+                localStorage.setItem("recipes", JSON.stringify(this.recipes));
+                this.editNew = true;
+                this.edit(this.recipes.length - 1);
+                rerender();
+            });
+
+            newButton.render(navbar);
+        }
 
         if (this.editor) {
             this.editor.render(div);
@@ -171,6 +205,7 @@ export class App {
             const recipeView = new RecipesView(this.recipes);
 
             recipeView.on("edit", (event) => {
+                this.editNew = false;
                 this.edit(event.detail.index);
                 rerender();
             });

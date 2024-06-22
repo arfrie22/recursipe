@@ -40,14 +40,6 @@ export default class RecipesView extends Component {
     const div = document.createElement("div");
     div.classList.add("flex", "flex-col", "gap-4");
     
-    const button = document.createElement("button");
-    button.classList.add("btn", "btn-primary", "w-full");
-    button.textContent = "New Recipe";
-    button.addEventListener("click", (event) => {
-      this.eventListeners.new.forEach((listener) => listener(event));
-    });
-    div.appendChild(button);
-    
     const grid = document.createElement("div");
     grid.classList.add(
       "grid",
