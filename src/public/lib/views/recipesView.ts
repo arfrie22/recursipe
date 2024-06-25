@@ -1,6 +1,5 @@
-import { ElementType, Listeners, Recipe } from "../types.js";
-import { Component } from "../components/component.js";
-import RecipeCard from "../components/recipeCard.js";
+import { Component, ElementType, Listeners, Recipe } from "@types";
+import RecipeCard from "@components/recipeCard";
 
 interface CardEvent extends Event {
   detail: {

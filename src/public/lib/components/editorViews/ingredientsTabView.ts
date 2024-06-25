@@ -1,10 +1,8 @@
-import { Ingredient } from "../../types.js";
-import { Component } from "../component.js";
-import { ElementType, Listeners } from "../../types.js";
-import SortableList from "../sortableList.js";
-import IngredientListItem from "../ingredientListItem.js";
-import DeleteModal from "../deleteModal.js";
-import { rerender } from "../../../app.js";
+import { Ingredient, Component, ElementType, Listeners } from "@types";
+import SortableList from "@components/sortableList";
+import IngredientListItem from "@components/ingredientListItem";
+import DeleteModal from "@components/deleteModal";
+import { rerender } from "$recipiesApp";
 
 interface UpdateInfoEvent extends Event {
   detail: Ingredient[];

@@ -1,9 +1,8 @@
-import { ElementType, Listeners, Recipe } from "../types.js";
-import { rerender } from "../../app.js";
-import { Component } from "../components/component.js";
-import InfoTabView from "../components/editorViews/infoTabView.js";
-import IngredientsTabView from "../components/editorViews/ingredientsTabView.js";
-import StepsTabView from "../components/editorViews/stepsTabView.js";
+import { ElementType, Listeners, Recipe, Component } from "@types";
+import { rerender } from "../../app";
+import InfoTabView from "@components/editorViews/infoTabView";
+import IngredientsTabView from "@components/editorViews/ingredientsTabView";
+import StepsTabView from "@components/editorViews/stepsTabView";
 
 interface SaveEvent extends Event {
   detail: Recipe;

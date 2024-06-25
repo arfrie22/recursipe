@@ -1,4 +1,4 @@
-import { Component } from "./component.js";
+import { Component } from "@types";
 
 export class SignInButton extends Component {
   constructor() {

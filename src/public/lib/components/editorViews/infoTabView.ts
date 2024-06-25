@@ -1,6 +1,4 @@
-import { RecipeInfo } from "../../types.js";
-import { Component } from "../component.js";
-import { ElementType, Listeners } from "../../types.js";
+import { RecipeInfo, Component, ElementType, Listeners } from "@types";
 
 interface UpdateInfoEvent extends Event {
   detail: RecipeInfo;

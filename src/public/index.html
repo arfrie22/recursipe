@@ -3,10 +3,6 @@
 <head>
     <title>Recursipe Editor</title>
     <link rel="stylesheet" href="index.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
 </head>
 
 <body>
@@ -15,11 +11,7 @@
         <span class="loading loading-dots loading-lg"></span>
     </div>
 
-    <script type="module">
-        import { App } from './app.ts';
-        const app = new App(document.getElementById('app'));
-        app.render();
-    </script>
+    <script type="module" src="index.ts" defer> </script>
 </body>
 
 </html>

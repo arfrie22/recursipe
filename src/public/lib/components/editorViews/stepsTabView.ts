@@ -1,10 +1,8 @@
-import { Step, TimeType } from "../../types.js";
-import { Component } from "../component.js";
-import { ElementType, Listeners } from "../../types.js";
-import SortableList from "../sortableList.js";
-import DeleteModal from "../deleteModal.js";
-import { rerender } from "../../../app.js";
-import StepListItem from "../stepListItem.js";
+import { Component, Step, TimeType, ElementType, Listeners } from "@types";
+import SortableList from "@components/sortableList";
+import DeleteModal from "@components/deleteModal";
+import { rerender } from "$recipiesApp";
+import StepListItem from "@components/stepListItem";
 
 interface UpdateInfoEvent extends Event {
   detail: Step[];

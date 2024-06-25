@@ -1,4 +1,4 @@
-import { Component } from "./component.js";
+import { Component } from "@types";
 import { IconNode, createElement } from "lucide";
 
 export default class Icon extends Component {

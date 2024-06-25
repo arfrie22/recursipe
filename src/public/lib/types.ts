@@ -29,6 +29,12 @@ export interface Recipe {
   steps: Step[];
 }
 
+export abstract class Component {
+  public render(rootElement: HTMLElement | undefined = undefined): Element {
+    return document.createElement("div");
+  }
+}
+
 export type ValueOf<T> = T[keyof T];
 export type ElementType<T> = T extends Array<infer V> ? V : never;
 export type Listeners<T> = ((event: T) => void)[];

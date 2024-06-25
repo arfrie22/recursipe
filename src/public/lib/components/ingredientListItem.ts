@@ -1,7 +1,5 @@
-import { Ingredient } from "../types.js";
-import { Component } from "./component.js";
-import ListItem from "./listItem.js";
-import { ElementType, Listeners } from "../types.js";
+import ListItem from "@components/listItem";
+import { Ingredient, ElementType, Listeners, Component } from "@types";
 
 class IngredientListItemInner extends Component {
   private ingredient: Ingredient;

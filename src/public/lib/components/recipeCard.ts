@@ -1,8 +1,6 @@
-import { Pencil, Delete, GripVertical } from "lucide";
-import { Component } from "./component.js";
-import IconButton from "./iconButton.js";
-import Icon from "./icon.js";
-import { ElementType, Listeners, RecipeInfo } from "../types.js";
+import { Pencil, Delete } from "lucide";
+import IconButton from "@components/iconButton";
+import { Component, ElementType, Listeners, RecipeInfo } from "@types";
 
 type EventListeners = {
   edit: Listeners<Event>;

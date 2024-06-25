@@ -1,4 +1,4 @@
-import { ElementType, Listeners } from "../types.js";
+import { ElementType, Listeners } from "@types";
 
 type EventListeners = {
   delete: Listeners<Event>;

@@ -1,8 +1,6 @@
-import { Step, TimeType } from "../types.js";
-import { Component } from "./component.js";
-import ListItem from "./listItem.js";
-import { ElementType, Listeners } from "../types.js";
-import Icon from "./icon.js";
+import { Component, Step, TimeType, ElementType, Listeners } from "@types";
+import ListItem from "@components/listItem";
+import Icon from "@components/icon";
 import { Carrot, CookingPot, IconNode, Timer } from "lucide";
 
 class StepListItemInner extends Component {

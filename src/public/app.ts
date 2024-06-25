@@ -1,8 +1,8 @@
 import { ArrowLeft, Plus } from "lucide";
-import IconButton from "./lib/components/iconButton.js";
-import { Recipe, TimeType } from "./lib/types.js";
-import Editor from "./lib/views/editor.js";
-import RecipesView from "./lib/views/recipesView.js";
+import IconButton from "@components/iconButton";
+import { Recipe, TimeType } from "@types";
+import Editor from "@views/editor";
+import RecipesView from "@views/recipesView";
 
 const rerenderListeners: Array<() => void> = [];
 

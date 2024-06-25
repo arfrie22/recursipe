@@ -1,5 +1,4 @@
-import { ElementType, Listeners } from "../types.js";
-import { Component } from "./component.js";
+import { Component, ElementType, Listeners } from "@types";
 import { Sortable, Plugins, SortableSortedEvent } from "@shopify/draggable";
 
 type EventListeners = {
