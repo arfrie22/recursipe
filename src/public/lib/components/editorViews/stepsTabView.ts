@@ -1,7 +1,7 @@
 import { Component, Step, TimeType, ElementType, Listeners } from "@types";
 import SortableList from "@components/sortableList";
 import DeleteModal from "@components/deleteModal";
-import { rerender } from "$recipiesApp";
+import { rerender } from "@lib";
 import StepListItem from "@components/stepListItem";
 
 interface UpdateInfoEvent extends Event {

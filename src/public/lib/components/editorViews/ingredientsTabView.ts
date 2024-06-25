@@ -2,7 +2,7 @@ import { Ingredient, Component, ElementType, Listeners } from "@types";
 import SortableList from "@components/sortableList";
 import IngredientListItem from "@components/ingredientListItem";
 import DeleteModal from "@components/deleteModal";
-import { rerender } from "$recipiesApp";
+import { rerender } from "@lib";
 
 interface UpdateInfoEvent extends Event {
   detail: Ingredient[];

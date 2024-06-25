@@ -33,6 +33,7 @@
       "@components/*": ["./src/public/lib/components/*"],
       "@views/*": ["./src/public/lib/views/*"],
       "@types": ["./src/public/lib/types.ts"],
+      "@lib": ["./src/public/lib/lib.ts"],
       "$recipiesApp": ["./src/public/app.ts"],
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */

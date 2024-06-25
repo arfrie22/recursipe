@@ -1,5 +1,5 @@
 import { ElementType, Listeners, Recipe, Component } from "@types";
-import { rerender } from "../../app";
+import { rerender } from "@lib";
 import InfoTabView from "@components/editorViews/infoTabView";
 import IngredientsTabView from "@components/editorViews/ingredientsTabView";
 import StepsTabView from "@components/editorViews/stepsTabView";

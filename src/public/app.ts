@@ -3,12 +3,7 @@ import IconButton from "@components/iconButton";
 import { Recipe, TimeType } from "@types";
 import Editor from "@views/editor";
 import RecipesView from "@views/recipesView";
-
-const rerenderListeners: Array<() => void> = [];
-
-export function rerender() {
-  rerenderListeners.forEach((listener) => listener());
-}
+import { addRerenderListener, rerender } from "@lib";
 
 const demoRecipe: Recipe = {
   info: {
@@ -128,7 +123,7 @@ export class App {
       sessionStorage.removeItem("editorActiveTab");
     }
 
-    rerenderListeners.push(() => this.render());
+    addRerenderListener(() => this.render());
   }
 
   private edit(index: number) {
