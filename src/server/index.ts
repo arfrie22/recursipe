@@ -30,15 +30,15 @@ app.use(
 
 const publicDir = process.env.PUBLIC_DIR || "./public";
 
-const edge = Edge.create();
-edge.mount(new URL("./views", publicDir));
+// const edge = Edge.create();
+// edge.mount(publicDir);
 
-app.get("/", async (req, res) => {
-  const data = {};
-  const html = await edge.render("index", data);
+// app.get("/", async (req, res) => {
+//   const data = {};
+//   const html = await edge.render("index", data);
 
-  res.contentType("text/html").send(html);
-});
+//   res.contentType("text/html").send(html);
+// });
 
 app.use(express.static(publicDir));
 
