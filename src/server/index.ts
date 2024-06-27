@@ -87,7 +87,6 @@ dataSource
     .initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
-        dataSource.getRepository(Recipe).save(demoRecipe);
         
     })
     .catch((err) => {
