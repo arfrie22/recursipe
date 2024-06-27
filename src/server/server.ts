@@ -5,6 +5,8 @@ import Google from "@auth/express/providers/google";
 import { Edge } from "edge.js";
 import { DataSource } from "typeorm";
 import { Recipe, TimeType } from "@types";
+import favicon from "serve-favicon";
+import path from "path";
 
 export async function init() {
     const app: Application = express();
@@ -94,6 +96,7 @@ export async function init() {
     );
 
     app.use(express.json());
+    app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
     // register routes
     app.get("/users", async (req, res) => {

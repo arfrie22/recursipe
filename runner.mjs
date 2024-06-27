@@ -23,9 +23,11 @@ async function buildFrontend() {
             'src/public/index.html',
             'src/public/index.css',
             'src/public/index.ts',
+            'src/public/favicon.ico'
         ],
         loader: {
             ".html": "copy",
+            ".ico": "copy",
         },
         plugins: [
             postCssPlugin({
