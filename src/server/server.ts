@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import { ExpressAuth } from "@auth/express";
 import { TypeORMAdapter } from "@auth/typeorm-adapter";
 import Google from "@auth/express/providers/google";
@@ -7,6 +7,7 @@ import { DataSource } from "typeorm";
 import { Recipe, TimeType } from "@types";
 import favicon from "serve-favicon";
 import path from "path";
+import { loadAPIEndpoints } from "./api";
 
 export async function init() {
     const app: Application = express();
@@ -104,25 +105,19 @@ export async function init() {
 
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
-    // register routes
-    app.get("/users", async (req, res) => {
-        console.log("GET /users");
-        const dataSource: DataSource = res.locals.dataSource;
-        const users = await dataSource.getRepository(Recipe).find();
-        res.json(users);
-    });
+    app.use("/api", loadAPIEndpoints());
 
     const publicDir = process.env.PUBLIC_DIR || "./public";
 
     const edge = Edge.create();
     edge.mount(publicDir);
 
-    app.get("/", async (req, res) => {
-        const data = {};
-        const html = await edge.render("index", data);
+    // app.get("/", async (req, res) => {
+    //     const data = {};
+    //     const html = await edge.render("index", data);
 
-        res.contentType("text/html").send(html);
-    });
+    //     res.contentType("text/html").send(html);
+    // });
 
     app.use(express.static(publicDir));
 
