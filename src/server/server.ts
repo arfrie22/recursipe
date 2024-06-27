@@ -96,11 +96,18 @@ export async function init() {
     );
 
     app.use(express.json());
+    
+    app.use((req, res, next) => {
+        res.locals.dataSource = dataSource;
+        next();
+    });
+
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
     // register routes
     app.get("/users", async (req, res) => {
         console.log("GET /users");
+        const dataSource: DataSource = res.locals.dataSource;
         const users = await dataSource.getRepository(Recipe).find();
         res.json(users);
     });
