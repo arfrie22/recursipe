@@ -5,10 +5,9 @@
   "main": "src/server/index.ts",
   "type": "module",
   "scripts": {
-    "build": "node build.mjs",
+    "build": "node runner.mjs build",
     "start": "PUBLIC_DIR=\"dist/public\" node dist/index.cjs",
-    "launch": "(npm run build && exec npm run start)",
-    "watch": "nodemon --watch src --watch . --exec 'npm run launch' --ext ts,html,ejs,css,env.*,env",
+    "watch": "PUBLIC_DIR=\"dist/public\" node runner.mjs watch",
     "serve": "parcel serve --target frontend"
   },
   "keywords": [],
@@ -24,6 +23,7 @@
     "@shopify/draggable": "^1.1.3",
     "@types/pg": "^8.11.6",
     "autoprefixer": "^10.4.19",
+    "chokidar": "^3.6.0",
     "dotenv": "^16.4.5",
     "edge.js": "^6.0.2",
     "express": "^4.19.2",
