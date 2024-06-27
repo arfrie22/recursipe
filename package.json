@@ -8,7 +8,7 @@
     "build": "node runner.mjs build",
     "start": "PUBLIC_DIR=\"dist/public\" node dist/index.cjs",
     "watch": "PUBLIC_DIR=\"dist/public\" node runner.mjs watch",
-    "serve": "parcel serve --target frontend"
+    "serve": "PUBLIC_DIR=\"dist/public\" node runner.mjs serve"
   },
   "keywords": [],
   "author": {
