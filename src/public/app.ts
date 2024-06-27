@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { ArrowLeft, Plus } from "lucide";
 import IconButton from "@components/iconButton";
 import { Recipe, TimeType } from "@types";
@@ -5,15 +6,15 @@ import Editor from "@views/editor";
 import RecipesView from "@views/recipesView";
 import { addRerenderListener, rerender } from "@lib";
 
-const demoRecipe: Recipe = {
-  info: {
+const demoRecipe: Recipe = new Recipe(
+  {
     name: "Vanilla Ice Cream",
     description:
       "A very simple vanilla ice cream recipe. Based on the recipe from the amazing David Lebovitz.",
     yield: 2,
     yieldUnit: "pt",
   },
-  ingredients: [
+  [
     {
       name: "heavy cream",
       quantity: 2,
@@ -40,7 +41,7 @@ const demoRecipe: Recipe = {
       unit: "tsp",
     },
   ],
-  steps: [
+  [
     {
       direction:
         "In a medium saucepan, warm 1 cup of the cream with the sugar, and salt till simmering.",
@@ -59,18 +60,18 @@ const demoRecipe: Recipe = {
       timeType: TimeType.Preparation,
     },
   ],
-};
+);
 
-const defaultRecipe: Recipe = {
-  info: {
+const defaultRecipe: Recipe = new Recipe(
+  {
     name: "",
     description: "",
     yield: 0,
     yieldUnit: "",
   },
-  ingredients: [],
-  steps: [],
-};
+  [],
+  [],
+);
 
 export class App {
   private rootElement: HTMLElement;
