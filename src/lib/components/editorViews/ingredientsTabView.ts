@@ -68,7 +68,6 @@ export default class IngredientsTabView extends Component {
     };
 
     if (this.deleteOpen) {
-      console.log("delete");
       deleteIngredient();
     }
 

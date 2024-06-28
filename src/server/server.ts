@@ -85,7 +85,8 @@ export async function init() {
     if (process.env.DEMO_MODE?.toLowerCase() === "true") {
         console.log("Loading demo data");
         await dataSource.getRepository(Recipe).clear();
-        await dataSource.getRepository(Recipe).save(demoRecipe);
+        const recipe = dataSource.getRepository(Recipe).create(demoRecipe);
+        await dataSource.getRepository(Recipe).save(recipe);
     }
 
     app.set("trust proxy", true);

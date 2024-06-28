@@ -68,7 +68,6 @@ export default class StepsTabView extends Component {
     };
 
     if (this.deleteOpen) {
-      console.log("delete");
       deleteStep();
     }
 

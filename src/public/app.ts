@@ -5,6 +5,7 @@ import { Recipe, TimeType } from "@types";
 import Editor from "@views/editor";
 import RecipesView from "@views/recipesView";
 import { addRerenderListener, rerender } from "@lib";
+import { getToast } from "@components/toast";
 
 function makeDefaultRecipe(): Recipe {
     return new Recipe(
@@ -61,22 +62,27 @@ export class App {
         this.editor = new Editor(recipe || makeDefaultRecipe());
 
         this.editor.on("save", async (event) => {
-            if (this.editNew) {
-                await fetch("/api/recipes", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(event.detail),
-                });
-            } else {
-                await fetch("/api/recipes/" + event.detail.id, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(event.detail),
-                });
+            try {
+                if (this.editNew) {
+                    await fetch("/api/recipes", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(event.detail),
+                    });
+                } else {
+                    await fetch("/api/recipes/" + event.detail.id, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(event.detail),
+                    });
+                }
+            } catch (error) {
+                getToast().toast("error", "Failed to save recipe");
+                console.error(error);
             }
             this.editing = false;
             sessionStorage.setItem("editing", "false");
@@ -105,9 +111,12 @@ export class App {
 
     private async getRecipes() {
         try {
-            this.recipes = await fetch("/api/recipes").then((res) => res.json());
+            this.recipes = await fetch("/api/recipes").then((res) =>
+                res.json()
+            );
         } catch (error) {
             console.error(error);
+            getToast().toast("error", "Failed to load recipes");
         }
     }
 
@@ -182,7 +191,7 @@ export class App {
                 fetch("/api/recipes/" + event.detail.recipe.id, {
                     method: "DELETE",
                 });
-                
+
                 await this.getRecipes();
                 rerender();
             });
