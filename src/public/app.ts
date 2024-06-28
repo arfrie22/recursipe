@@ -75,6 +75,8 @@ export class App {
                     if (res.status !== 200) {
                         throw new Error("Failed to save recipe");
                     }
+
+                    getToast().toast("success", "Recipe created");
                 } else {
                     const res = await fetch("/api/recipes/" + event.detail.id, {
                         method: "PUT",
@@ -87,6 +89,8 @@ export class App {
                     if (res.status !== 200) {
                         throw new Error("Failed to save recipe");
                     }
+
+                    getToast().toast("success", "Recipe updated");
                 }
             } catch (error) {
                 getToast().toast("error", "Failed to save recipe");
@@ -200,7 +204,7 @@ export class App {
 
             recipeView.on("delete", async (event) => {
                 try {
-                    const res = fetch("/api/recipes/" + event.detail.recipe.id, {
+                    const res = await fetch("/api/recipes/" + event.detail.recipe.id, {
                         method: "DELETE",
                     });
 
@@ -213,6 +217,7 @@ export class App {
                     return;
                 }
 
+                getToast().toast("success", "Recipe deleted");
                 await this.getRecipes();
                 rerender();
             });
