@@ -8,6 +8,7 @@ import { Recipe, TimeType } from "@types";
 import favicon from "serve-favicon";
 import path from "path";
 import { loadAPIEndpoints } from "./api";
+import { authSession } from "./middleware";
 
 export async function init() {
     const app: Application = express();
@@ -20,7 +21,6 @@ export async function init() {
         host: process.env.TYPEORM_HOST || "localhost",
         port: Number.parseInt(process.env.TYPEORM_PORT || "") || 5432,
         synchronize: true,
-        // logging: true,
         entities: [Recipe],
     });
     
@@ -90,13 +90,23 @@ export async function init() {
     }
 
     app.set("trust proxy", true);
+
+    const authConfig = {
+        providers: [Google],
+        sessionName: 'session',
+        adapter: TypeORMAdapter({
+            ...dataSource.options,
+            entities: [],
+            synchronize: false,
+        }),
+    };
+
     app.use(
         "/auth/*",
-        ExpressAuth({
-            providers: [Google],
-            adapter: TypeORMAdapter(dataSource.options),
-        })
+        ExpressAuth(authConfig)
     );
+
+    app.use(authSession(authConfig));
 
     app.use(express.json());
     

@@ -1,9 +1,20 @@
 import { Recipe } from "@types";
 import { Request, Response, Router } from "express";
 import { DataSource } from "typeorm";
+import { requireAuth } from "./middleware";
 
 function loadRecipeEndpoints(): Router {
     const apiRouter = Router()
+    const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
+    apiRouter.use(requireAuth);
+    
+    apiRouter.use(function (req: Request, res: Response, next) {
+        if (!adminEmails.includes(res.locals.session.user.email)) {
+            return res.status(403).send("Forbidden")
+        }
+
+        next()
+    });
     apiRouter.get("/", async function (req: Request, res: Response) {
         const dataSource: DataSource = res.locals.dataSource;
         const recipes = (await dataSource.getRepository(Recipe).find()).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
