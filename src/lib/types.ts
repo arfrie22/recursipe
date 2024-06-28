@@ -18,9 +18,15 @@ export interface Step {
     timeType: TimeType;
 }
 
+export interface RecursiveIngredient {
+    id: number;
+    quantity: number;
+}
+
 export interface RecipeInfo {
     name: string;
     description: string;
+    photo?: string;
     yield: number;
     yieldUnit: string;
 }
@@ -37,6 +43,9 @@ export class Recipe extends BaseEntity {
     ingredients: Ingredient[];
 
     @Column({ type: "jsonb" })
+    recursiveIngredients: RecursiveIngredient[];
+
+    @Column({ type: "jsonb" })
     steps: Step[];
 
     @CreateDateColumn()
@@ -48,11 +57,12 @@ export class Recipe extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date | null;
 
-    constructor(info: RecipeInfo, ingredients: Ingredient[], steps: Step[]) {
+    constructor(info: RecipeInfo, ingredients: Ingredient[], recursiveIngredients: RecursiveIngredient[], steps: Step[]) {
         super();
         this.id = 0;
         this.info = info;
         this.ingredients = ingredients;
+        this.recursiveIngredients = recursiveIngredients;
         this.steps = steps;
         this.createdAt = new Date();
         this.updatedAt = new Date();

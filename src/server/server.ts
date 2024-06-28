@@ -59,6 +59,7 @@ export async function init() {
                 unit: "tsp",
             },
         ],
+        [],
         [
             {
                 direction:
@@ -80,13 +81,35 @@ export async function init() {
         ]
     );
 
+    const demoRecipe2: Recipe = new Recipe(
+        {
+            name: "Ice Cream 2",
+            description:
+                "If ice cream is so good why haven't they made an ice cream 2?",
+            yield: 4,
+            yieldUnit: "pt",
+        },
+        [],
+        [
+            {
+                id: 0,
+                quantity: 2,
+            }
+        ],
+        []
+    );
+
     await dataSource.initialize();
 
     if (process.env.DEMO_MODE?.toLowerCase() === "true") {
         console.log("Loading demo data");
         await dataSource.getRepository(Recipe).clear();
         const recipe = dataSource.getRepository(Recipe).create(demoRecipe);
-        await dataSource.getRepository(Recipe).save(recipe);
+        const res = await dataSource.getRepository(Recipe).save(recipe);
+
+        demoRecipe2.recursiveIngredients[0].id = res.id;
+        const recipe2 = dataSource.getRepository(Recipe).create(demoRecipe2);
+        await dataSource.getRepository(Recipe).save(recipe2);
     }
 
     app.set("trust proxy", true);

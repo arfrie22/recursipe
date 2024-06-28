@@ -3,6 +3,7 @@ import { rerender } from "@lib";
 import InfoTabView from "@components/editorViews/infoTabView";
 import IngredientsTabView from "@components/editorViews/ingredientsTabView";
 import StepsTabView from "@components/editorViews/stepsTabView";
+import RecursionTabView from "@components/editorViews/recursionTabView";
 
 interface SaveEvent extends Event {
   detail: Recipe;
@@ -37,6 +38,7 @@ export default class Editor extends Component {
 
   private infoTabView: InfoTabView;
   private ingredientsTabView: IngredientsTabView;
+  private recursionTabView: RecursionTabView;
   private stepsTabView: StepsTabView;
 
   private recipe: Recipe;
@@ -99,6 +101,16 @@ export default class Editor extends Component {
       save();
     });
 
+    this.recursionTabView = new RecursionTabView(this.recipe.recursiveIngredients);
+    this.recursionTabView.on("update", (event) => {
+      this.recipe.recursiveIngredients = event.detail;
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+    });
+
+    this.recursionTabView.on("save", (event) => {
+      save();
+    });
+
     this.stepsTabView = new StepsTabView(this.recipe.steps);
     this.stepsTabView.on("update", (event) => {
       this.recipe.steps = event.detail;
@@ -139,13 +151,12 @@ export default class Editor extends Component {
     });
 
     const recursionTab = document.createElement("a");
-    recursionTab.classList.add("tab", "tab-disabled");
+    recursionTab.classList.add("tab");
     recursionTab.textContent = "Recursion";
     const recursionTabElement = tabs.appendChild(recursionTab);
     recursionTabElement.addEventListener("click", () => {
-      // Not yet implemented
-      //   this.view = View.Recursion;
-      //   rerender();
+        this.view = View.Recursion;
+        rerender();
     });
 
     const stepsTab = document.createElement("a");
@@ -169,9 +180,8 @@ export default class Editor extends Component {
         break;
       case View.Recursion:
         recursionTabElement.classList.add("tab-active");
-        const recursion = document.createElement("div");
-        recursion.textContent = "Recursion";
-        div.appendChild(recursion);
+        const recursion = this.recursionTabView.render(div);
+        break;
       case View.Steps:
         stepsTabElement.classList.add("tab-active");
         const steps = this.stepsTabView.render(div);
