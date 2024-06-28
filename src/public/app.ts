@@ -64,25 +64,34 @@ export class App {
         this.editor.on("save", async (event) => {
             try {
                 if (this.editNew) {
-                    await fetch("/api/recipes", {
+                    const res = await fetch("/api/recipes", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify(event.detail),
                     });
+
+                    if (res.status !== 200) {
+                        throw new Error("Failed to save recipe");
+                    }
                 } else {
-                    await fetch("/api/recipes/" + event.detail.id, {
+                    const res = await fetch("/api/recipes/" + event.detail.id, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify(event.detail),
                     });
+
+                    if (res.status !== 200) {
+                        throw new Error("Failed to save recipe");
+                    }
                 }
             } catch (error) {
                 getToast().toast("error", "Failed to save recipe");
                 console.error(error);
+                return;
             }
             this.editing = false;
             sessionStorage.setItem("editing", "false");
@@ -111,9 +120,11 @@ export class App {
 
     private async getRecipes() {
         try {
-            this.recipes = await fetch("/api/recipes").then((res) =>
-                res.json()
-            );
+            const res = await fetch("/api/recipes");
+            if (res.status !== 200) {
+                throw new Error("Failed to load recipes");
+            }
+            this.recipes = await res.json();
         } catch (error) {
             console.error(error);
             getToast().toast("error", "Failed to load recipes");
@@ -188,9 +199,19 @@ export class App {
             });
 
             recipeView.on("delete", async (event) => {
-                fetch("/api/recipes/" + event.detail.recipe.id, {
-                    method: "DELETE",
-                });
+                try {
+                    const res = fetch("/api/recipes/" + event.detail.recipe.id, {
+                        method: "DELETE",
+                    });
+
+                    if (res.status !== 200) {
+                        throw new Error("Failed to delete recipe");
+                    }
+                } catch (error) {
+                    getToast().toast("error", "Failed to delete recipe");
+                    console.error(error);
+                    return;
+                }
 
                 await this.getRecipes();
                 rerender();
