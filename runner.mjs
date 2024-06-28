@@ -17,13 +17,34 @@ async function buildServer() {
     });
 }
 
+
 async function buildFrontend() {
     await esbuild.build({
         entryPoints: [
-            'src/public/index.html',
-            'src/public/index.css',
-            'src/public/index.ts',
-            'src/public/favicon.ico'
+            {
+                in: 'src/static/favicon.ico',
+                out: 'favicon',
+            },
+            {
+                in: 'src/public/index.html',
+                out: 'index',
+            },
+            {
+                in: 'src/public/base.css',
+                out: 'base',
+            },
+            {
+                in: 'src/public/index.ts',
+                out: 'index',
+            },
+            {
+                in: 'src/public/editor/index.html',
+                out: 'editor/index',
+            },
+            {
+                in: 'src/public/editor/index.ts',
+                out: 'editor/index',
+            },
         ],
         loader: {
             ".html": "copy",
@@ -56,9 +77,13 @@ async function watch() {
         if (server) {
             server.kill();
         }
+        try {
         await buildServer();
         await buildFrontend();
         server = serve();
+        } catch (error) {
+            console.error('Error:', error);
+        }
         running = false;
     });
 
