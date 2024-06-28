@@ -70,6 +70,8 @@ async function watch() {
     let running = false;
     let server = null;
     const watcher = chokidar.watch('./src', {persistent: true});
+    watcher.add('./tailwind.config.js');
+    watcher.add('./.env');
     watcher.on('all', async (event, path) => {
         if (running) return;
         console.log('Rebuilding...');

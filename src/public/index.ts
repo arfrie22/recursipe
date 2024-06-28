@@ -1,14 +1,11 @@
-import { App } from './app';
+// If you are using JavaScript/ECMAScript modules:
+import Dropzone from "dropzone";
 
-async function init() {
-    const root = document.getElementById('app');
-    if (!root) {
-        throw new Error('Root element not found');
-    }
+// If you are using an older version than Dropzone 6.0.0,
+// then you need to disabled the autoDiscover behaviour here:
+Dropzone.autoDiscover = false;
 
-    const app = new App(root);
-    await app.init();
-    app.render();
-}
-
-init();
+let myDropzone = new Dropzone("#app", { url: "/api/photo", paramName: "image" });
+myDropzone.on("addedfile", (file) => {
+    console.log(`File added: ${file.name}`);
+});
