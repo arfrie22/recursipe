@@ -16,3 +16,12 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
     next();
 }
+
+const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
+export function isAdmin(req: Request, res: Response, next: NextFunction) {
+    if (!adminEmails.includes(res.locals.session.user.email)) {
+        return res.status(403).send("Forbidden")
+    }
+
+    next()
+}
