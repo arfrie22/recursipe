@@ -6,8 +6,8 @@ function loadRecipeEndpoints(): Router {
     const apiRouter = Router()
     apiRouter.get("/", async function (req: Request, res: Response) {
         const dataSource: DataSource = res.locals.dataSource;
-        const users = await dataSource.getRepository(Recipe).find()
-        res.json(users)
+        const recipes = await (await dataSource.getRepository(Recipe).find()).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+        res.json(recipes)
     })
 
     apiRouter.get("/:id", async function (req: Request, res: Response) {
@@ -19,15 +19,15 @@ function loadRecipeEndpoints(): Router {
 
         const results = await dataSource.getRepository(Recipe).findOneBy({id})
         if (!results) {
-            return res.status(404).send("User not found")
+            return res.status(404).send("Recipe not found")
         }
         return res.send(results)
     })
 
     apiRouter.post("/", async function (req: Request, res: Response) {
         const dataSource: DataSource = res.locals.dataSource;
-        const user = dataSource.getRepository(Recipe).create(req.body)
-        const results = await dataSource.getRepository(Recipe).save(Recipe)
+        const recipe = dataSource.getRepository(Recipe).create(req.body)
+        const results = await dataSource.getRepository(Recipe).save(recipe)
         return res.send(results)
     })
 
@@ -38,13 +38,13 @@ function loadRecipeEndpoints(): Router {
             return res.status(400).send("Invalid ID")
         }
 
-        const user = await dataSource.getRepository(Recipe).findOneBy({id})
-        if (!user) {
-            return res.status(404).send("User not found")
+        const recipe = await dataSource.getRepository(Recipe).findOneBy({id})
+        if (!recipe) {
+            return res.status(404).send("Recipe not found")
         }
 
-        dataSource.getRepository(Recipe).merge(user, req.body)
-        const results = await dataSource.getRepository(Recipe).save(Recipe)
+        dataSource.getRepository(Recipe).merge(recipe, req.body)
+        const results = await dataSource.getRepository(Recipe).save(recipe)
         return res.send(results)
     })
 

@@ -82,7 +82,8 @@ export async function init() {
 
     await dataSource.initialize();
 
-    if (process.env.DEMO_MODE === "true") {
+    if (process.env.DEMO_MODE?.toLowerCase() === "true") {
+        console.log("Loading demo data");
         await dataSource.getRepository(Recipe).clear();
         await dataSource.getRepository(Recipe).save(demoRecipe);
     }

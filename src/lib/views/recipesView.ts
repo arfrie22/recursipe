@@ -3,7 +3,7 @@ import RecipeCard from "@components/recipeCard";
 
 interface CardEvent extends Event {
   detail: {
-    index: number;
+    recipe: Recipe;
   };
 }
 
@@ -53,14 +53,14 @@ export default class RecipesView extends Component {
     div.appendChild(grid);
 
     // Add new recipe card with event listeners
-    this.recipes.forEach((recipe, index) => {
+    this.recipes.forEach((recipe) => {
       const card = new RecipeCard(recipe.info);
       card.on("edit", (event) => {
         this.eventListeners.edit.forEach((listener) =>
           listener(
             new CustomEvent("edit", {
               detail: {
-                index,
+                recipe,
               },
             })
           )
@@ -72,7 +72,7 @@ export default class RecipesView extends Component {
           listener(
             new CustomEvent("delete", {
               detail: {
-                index,
+                recipe,
               },
             })
           )

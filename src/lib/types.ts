@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from "typeorm";
 
 export interface Ingredient {
     name: string;
@@ -39,12 +39,24 @@ export class Recipe extends BaseEntity {
     @Column({ type: "jsonb" })
     steps: Step[];
 
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
+
     constructor(info: RecipeInfo, ingredients: Ingredient[], steps: Step[]) {
         super();
         this.id = 0;
         this.info = info;
         this.ingredients = ingredients;
         this.steps = steps;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+        this.deletedAt = new Date();
     }
 }
 
