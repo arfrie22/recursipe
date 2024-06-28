@@ -40,13 +40,13 @@ export class Recipe extends BaseEntity {
     steps: Step[];
 
     @CreateDateColumn()
-    createdAt!: Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAt!: Date;
+    updatedAt: Date;
 
     @DeleteDateColumn()
-    deletedAt!: Date;
+    deletedAt: Date | null;
 
     constructor(info: RecipeInfo, ingredients: Ingredient[], steps: Step[]) {
         super();
@@ -54,6 +54,9 @@ export class Recipe extends BaseEntity {
         this.info = info;
         this.ingredients = ingredients;
         this.steps = steps;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+        this.deletedAt = null;
     }
 }
 
