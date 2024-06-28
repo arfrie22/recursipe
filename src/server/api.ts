@@ -6,7 +6,7 @@ function loadRecipeEndpoints(): Router {
     const apiRouter = Router()
     apiRouter.get("/", async function (req: Request, res: Response) {
         const dataSource: DataSource = res.locals.dataSource;
-        const recipes = await (await dataSource.getRepository(Recipe).find()).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+        const recipes = (await dataSource.getRepository(Recipe).find()).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
         res.json(recipes)
     })
 
