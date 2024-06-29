@@ -24,14 +24,14 @@ export default class IconButton extends Component {
     this.icon = icon;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("button");
     element.classList.add("btn", "btn-square", "btn-outline");
     element.addEventListener("click", (event) => {
       this.eventListeners.click.forEach((listener) => listener(event));
     });
 
-    const icon = new Icon(this.icon).render(element);
+    const icon = await new Icon(this.icon).render(element);
 
     if (rootElement) {
       rootElement.appendChild(element);

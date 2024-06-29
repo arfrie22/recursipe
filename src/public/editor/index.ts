@@ -8,7 +8,7 @@ async function init() {
 
     const app = new App(root);
     await app.init();
-    app.render();
+    await app.render();
 }
 
 init();

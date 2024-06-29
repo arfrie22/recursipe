@@ -35,7 +35,7 @@ export default class RecipesView extends Component {
     this.recipes = recipes;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const div = document.createElement("div");
     div.classList.add("flex", "flex-col", "gap-4");
 
@@ -53,7 +53,7 @@ export default class RecipesView extends Component {
     div.appendChild(grid);
 
     // Add new recipe card with event listeners
-    this.recipes.forEach((recipe) => {
+    for (const recipe of this.recipes) {
       const card = new RecipeCard(recipe.info);
       card.on("edit", (event) => {
         this.eventListeners.edit.forEach((listener) =>
@@ -79,8 +79,8 @@ export default class RecipesView extends Component {
         );
       });
 
-      card.render(grid);
-    });
+      await card.render(grid);
+    }
 
     if (rootElement) {
       rootElement.appendChild(div);

@@ -42,7 +42,7 @@ export default class IngredientsTabView extends Component {
     this.ingredients = ingredients;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("div");
     element.classList.add("flex", "flex-col", "gap-4");
 
@@ -209,7 +209,7 @@ export default class IngredientsTabView extends Component {
 
       this.update();
     });
-    sortableList.render(element);
+    await sortableList.render(element);
 
     const saveButton = document.createElement("button");
     saveButton.classList.add("btn", "btn-primary", "w-full");

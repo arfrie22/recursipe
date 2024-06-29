@@ -8,7 +8,7 @@ export default class Icon extends Component {
     this.icon = icon;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = createElement(this.icon);
     element.classList.add("h-6", "w-6");
 

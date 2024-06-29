@@ -10,7 +10,7 @@ class StepListItemInner extends Component {
     this.step = step;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("div");
     element.classList.add("flex", "items-center", "justify-between");
 
@@ -48,7 +48,7 @@ class StepListItemInner extends Component {
     }
 
     const icon = new Icon(cookingIcon);
-    icon.render(time);
+    await icon.render(time);
 
     if (rootElement) {
       rootElement.appendChild(element);
@@ -83,9 +83,9 @@ export default class StepListItem extends Component {
     this.step = step;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const listItem = new ListItem(new StepListItemInner(this.step));
-    const element = listItem.render(rootElement);
+    const element = await listItem.render(rootElement);
     listItem.on("edit", () => {
       this.eventListeners.edit.forEach((listener) =>
         listener(new Event("edit"))

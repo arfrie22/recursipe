@@ -77,7 +77,7 @@ export class App {
                         throw new Error("Failed to save recipe");
                     }
 
-                    getToast().toast("success", "Recipe created");
+                    await getToast().toast("success", "Recipe created");
                 } else {
                     const res = await fetch("/api/recipes/" + event.detail.id, {
                         method: "PUT",
@@ -91,10 +91,10 @@ export class App {
                         throw new Error("Failed to save recipe");
                     }
 
-                    getToast().toast("success", "Recipe updated");
+                    await getToast().toast("success", "Recipe updated");
                 }
             } catch (error) {
-                getToast().toast("error", "Failed to save recipe");
+                await getToast().toast("error", "Failed to save recipe");
                 console.error(error);
                 return;
             }
@@ -132,11 +132,11 @@ export class App {
             this.recipes = await res.json();
         } catch (error) {
             console.error(error);
-            getToast().toast("error", "Failed to load recipes");
+            await getToast().toast("error", "Failed to load recipes");
         }
     }
 
-    render() {
+    async render() {
         this.rootElement.innerHTML = "";
 
         const div = document.createElement("div");
@@ -178,7 +178,7 @@ export class App {
                 rerender();
             });
 
-            cancelButton.render(navbar);
+            await cancelButton.render(navbar);
         } else {
             const newButton = new IconButton(Plus);
             newButton.on("click", () => {
@@ -187,12 +187,12 @@ export class App {
                 rerender();
             });
 
-            newButton.render(navbar);
+            await newButton.render(navbar);
         }
 
         // If editing, render the editor otherwise render the recipes view
         if (this.editor) {
-            this.editor.render(div);
+            await this.editor.render(div);
         } else {
             const recipeView = new RecipesView(this.recipes);
 
@@ -213,12 +213,12 @@ export class App {
                         throw new Error("Failed to delete recipe");
                     }
                 } catch (error) {
-                    getToast().toast("error", "Failed to delete recipe");
+                    await getToast().toast("error", "Failed to delete recipe");
                     console.error(error);
                     return;
                 }
 
-                getToast().toast("success", "Recipe deleted");
+                await getToast().toast("success", "Recipe deleted");
                 await this.getRecipes();
                 rerender();
             });
@@ -229,7 +229,7 @@ export class App {
                 rerender();
             });
 
-            recipeView.render(div);
+            await recipeView.render(div);
         }
     }
 }

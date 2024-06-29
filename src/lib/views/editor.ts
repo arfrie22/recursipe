@@ -1,4 +1,4 @@
-import { ElementType, Listeners, Recipe, Component } from "@types";
+import { ElementType, Listeners, Recipe, Component, RecipeCache } from "@types";
 import { rerender } from "@lib";
 import InfoTabView from "@components/editorViews/infoTabView";
 import IngredientsTabView from "@components/editorViews/ingredientsTabView";
@@ -41,10 +41,14 @@ export default class Editor extends Component {
   private recursionTabView: RecursionTabView;
   private stepsTabView: StepsTabView;
 
+  private recipeCache: RecipeCache;
+
   private recipe: Recipe;
 
   constructor(recipe: Recipe) {
     super();
+
+    this.recipeCache = new RecipeCache();
 
     // Load active tab from session storage
     const localActiveTab = sessionStorage.getItem("editorActiveTab");
@@ -101,7 +105,7 @@ export default class Editor extends Component {
       save();
     });
 
-    this.recursionTabView = new RecursionTabView(this.recipe.recursiveIngredients);
+    this.recursionTabView = new RecursionTabView(this.recipe.recursiveIngredients, this.recipeCache);
     this.recursionTabView.on("update", (event) => {
       this.recipe.recursiveIngredients = event.detail;
       sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
@@ -122,7 +126,7 @@ export default class Editor extends Component {
     });
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     sessionStorage.setItem("editorActiveTab", this.view.toString());
     const div = document.createElement("div");
     div.classList.add("flex", "flex-1", "h-full", "flex-col", "gap-4");
@@ -172,19 +176,19 @@ export default class Editor extends Component {
     switch (this.view) {
       case View.Info:
         infoTabElement.classList.add("tab-active");
-        const info = this.infoTabView.render(div);
+        const info = await this.infoTabView.render(div);
         break;
       case View.Ingredients:
         ingredientsTabElement.classList.add("tab-active");
-        const ingredients = this.ingredientsTabView.render(div);
+        const ingredients = await this.ingredientsTabView.render(div);
         break;
       case View.Recursion:
         recursionTabElement.classList.add("tab-active");
-        const recursion = this.recursionTabView.render(div);
+        const recursion = await this.recursionTabView.render(div);
         break;
       case View.Steps:
         stepsTabElement.classList.add("tab-active");
-        const steps = this.stepsTabView.render(div);
+        const steps = await this.stepsTabView.render(div);
         break;
     }
 

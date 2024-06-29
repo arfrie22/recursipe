@@ -3,11 +3,13 @@ import {
     Component,
     ElementType,
     Listeners,
+    RecipeCache,
 } from "@types";
 import SortableList from "@components/sortableList";
 import RecursiveListItem from "@components/recursiveListItem";
 import DeleteModal from "@components/deleteModal";
 import { rerender } from "@lib";
+import { getToast } from "@components/toast";
 
 interface UpdateInfoEvent extends Event {
     detail: RecursiveIngredient[];
@@ -22,6 +24,8 @@ export default class RecursionTabView extends Component {
     private recursiveIngredients: RecursiveIngredient[];
     private activeDeleteIndex: number = 0;
     private deleteOpen: boolean = false;
+
+    private recipeCache: RecipeCache;
 
     private eventListeners: EventListeners = {
         update: [],
@@ -42,12 +46,13 @@ export default class RecursionTabView extends Component {
         this.eventListeners.update.forEach((listener) => listener(event));
     }
 
-    constructor(recursiveIngredients: RecursiveIngredient[]) {
+    constructor(recursiveIngredients: RecursiveIngredient[], recipeCache: RecipeCache) {
         super();
         this.recursiveIngredients = recursiveIngredients;
+        this.recipeCache = recipeCache;
     }
 
-    render(rootElement: HTMLElement | undefined = undefined): Element {
+    public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
         const element = document.createElement("div");
         element.classList.add("flex", "flex-col", "gap-4");
 
@@ -63,19 +68,26 @@ export default class RecursionTabView extends Component {
             this.deleteOpen = false;
         });
 
-        function getName(
+        const getName = async (
             recursiveIngredient: RecursiveIngredient | undefined
-        ): string | undefined {
+        ): Promise<string | undefined> => {
             if (!recursiveIngredient) {
                 return undefined;
             }
 
             const id = recursiveIngredient.id;
+
+            try {
+                return (await this.recipeCache.get(id)).info.name;
+            } catch (error) {
+                await getToast().toast("error", "Failed to get ingredient name");
+                console.error(`Failed to get ingredient name: ${error}`);
+            }
             return id.toString();
         }
 
-        const deleteIngredient = () => {
-            const name = getName(this.recursiveIngredients[this.activeDeleteIndex]);
+        const deleteIngredient = async () => {
+            const name = await getName(this.recursiveIngredients[this.activeDeleteIndex]);
             return deleteModal.show(
                 name || "",
                 `Are you sure you want to delete ${
@@ -112,7 +124,7 @@ export default class RecursionTabView extends Component {
 
         const dialogTitle = document.createElement("h3");
         dialogTitle.classList.add("font-bold", "text-lg");
-        dialogTitle.textContent = "Add Ingredient";
+        dialogTitle.textContent = "Add Recursive Ingredient";
         dialogBox.appendChild(dialogTitle);
 
         const dialogContent = document.createElement("form");
@@ -187,7 +199,7 @@ export default class RecursionTabView extends Component {
             "w-full",
             "max-w-xl"
         );
-        createButton.textContent = "Add Ingredient";
+        createButton.textContent = "Add Recursive Ingredient";
         createButton.addEventListener("click", (event) => {
             editing = false;
             addButton.textContent = "Add";
@@ -200,7 +212,7 @@ export default class RecursionTabView extends Component {
         // Save index list to allow the buttons to find the correct index after sorting
         const indexs = this.recursiveIngredients.map((recursiveIngrediens, index) => index);
         const ingredients = this.recursiveIngredients.map((recursiveIngredient, index) => {
-            const item = new RecursiveListItem(recursiveIngredient);
+            const item = new RecursiveListItem(recursiveIngredient, this.recipeCache);
             item.on("delete", (event) => {
                 this.activeDeleteIndex = indexs.indexOf(index);
                 this.deleteOpen = true;
@@ -228,7 +240,7 @@ export default class RecursionTabView extends Component {
 
             this.update();
         });
-        sortableList.render(element);
+        await sortableList.render(element);
 
         const saveButton = document.createElement("button");
         saveButton.classList.add("btn", "btn-primary", "w-full");

@@ -26,7 +26,7 @@ export default class RecipeCard extends Component {
     this.recipeInfo = recipeInfo;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("div");
     element.classList.add(
       "card",
@@ -61,12 +61,12 @@ export default class RecipeCard extends Component {
     cardActions.classList.add("card-actions", "justify-end");
     cardBody.appendChild(cardActions);
 
-    const editButton = new IconButton(Pencil).render(cardActions);
+    const editButton = await new IconButton(Pencil).render(cardActions);
     editButton.addEventListener("click", (event) => {
       this.eventListeners.edit.forEach((listener) => listener(event));
     });
 
-    const deleteButton = new IconButton(Delete).render(cardActions);
+    const deleteButton = await new IconButton(Delete).render(cardActions);
     deleteButton.addEventListener("click", (event) => {
       this.eventListeners.delete.forEach((listener) => listener(event));
     });

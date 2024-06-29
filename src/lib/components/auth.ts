@@ -5,7 +5,7 @@ export class SignInButton extends Component {
     super();
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const form = document.createElement("form");
     form.action = "/auth/signin";
     form.method = "GET";
@@ -29,7 +29,7 @@ export class SignOutButton extends Component {
     super();
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const form = document.createElement("form");
     form.action = "/auth/signout";
     form.method = "GET";

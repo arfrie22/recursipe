@@ -24,7 +24,7 @@ export default class SortableList extends Component {
     this.items = items;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("ul");
     element.classList.add(
       "flex",
@@ -44,7 +44,7 @@ export default class SortableList extends Component {
       listItem.classList.add("flex", "flex-1", "w-full", "bg-neutral");
       element.appendChild(listItem);
 
-      const renderedItem = item.render(listItem);
+      const renderedItem = await item.render(listItem);
       renderedItem.classList.add("flex-1", "w-full");
     }
 

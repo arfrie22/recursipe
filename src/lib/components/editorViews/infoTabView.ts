@@ -36,7 +36,7 @@ export default class InfoTabView extends Component {
     this.recipeInfo = recipeInfo;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("form");
     element.classList.add("flex", "flex-col", "gap-4");
     element.addEventListener("submit", (event) => {

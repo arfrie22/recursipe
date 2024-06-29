@@ -43,11 +43,11 @@ export default class Toast {
         }
     }
 
-    toast(status: ToastStatus, text: string) {
+    async toast(status: ToastStatus, text: string) {
         const alert = document.createElement("div");
         alert.classList.add("alert", `${altertStatusClasses[status]}`, "animate-fade-down", "animate-once");
         const icon = this.getIcon(status);
-        icon.render(alert);
+        await icon.render(alert);
         const span = document.createElement("span");
         span.textContent = text;
         alert.appendChild(span);

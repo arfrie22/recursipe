@@ -27,7 +27,7 @@ export default class ListItem extends Component {
     this.inner = inner;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("div");
     element.classList.add(
       "flex",
@@ -43,7 +43,7 @@ export default class ListItem extends Component {
     const textDiv = document.createElement("div");
     textDiv.classList.add("flex-grow");
     element.appendChild(textDiv);
-    this.inner.render(textDiv);
+    await this.inner.render(textDiv);
 
     const interactionDiv = document.createElement("div");
     interactionDiv.classList.add("flex", "gap-4");
@@ -53,7 +53,7 @@ export default class ListItem extends Component {
     iconsDiv.classList.add("flex", "gap-2");
     interactionDiv.appendChild(iconsDiv);
 
-    const editButton = new IconButton(Pencil).render(iconsDiv);
+    const editButton = await new IconButton(Pencil).render(iconsDiv);
     interactionDiv.appendChild(editButton);
     editButton.addEventListener("click", (event) => {
       this.eventListeners.edit.forEach((listener) => {
@@ -61,7 +61,7 @@ export default class ListItem extends Component {
       });
     });
 
-    const deleteButton = new IconButton(Delete).render(iconsDiv);
+    const deleteButton = await new IconButton(Delete).render(iconsDiv);
     interactionDiv.appendChild(deleteButton);
     deleteButton.addEventListener("click", (event) => {
       this.eventListeners.delete.forEach((listener) => {
@@ -81,7 +81,7 @@ export default class ListItem extends Component {
     interactionDiv.appendChild(gripDiv);
 
     const gripIcon = new Icon(GripVertical);
-    gripIcon.render(gripDiv).classList;
+    await gripIcon.render(gripDiv);
 
     if (rootElement) {
       rootElement.appendChild(element);

@@ -8,7 +8,7 @@ class IngredientListItemInner extends Component {
     this.ingredient = ingredient;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const element = document.createElement("div");
     element.classList.add("flex", "items-center", "gap-2");
 
@@ -57,10 +57,10 @@ export default class IngredientListItem extends Component {
     this.ingredient = ingredient;
   }
 
-  render(rootElement: HTMLElement | undefined = undefined): Element {
+  public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
     const listItem = new ListItem(new IngredientListItemInner(this.ingredient));
 
-    const element = listItem.render(rootElement);
+    const element = await listItem.render(rootElement);
     listItem.on("edit", () => {
       this.eventListeners.edit.forEach((listener) =>
         listener(new Event("edit"))

@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    BaseEntity,
+    CreateDateColumn,
+    DeleteDateColumn,
+    UpdateDateColumn,
+} from "typeorm";
 
 export interface Ingredient {
     name: string;
@@ -57,7 +66,12 @@ export class Recipe extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date | null;
 
-    constructor(info: RecipeInfo, ingredients: Ingredient[], recursiveIngredients: RecursiveIngredient[], steps: Step[]) {
+    constructor(
+        info: RecipeInfo,
+        ingredients: Ingredient[],
+        recursiveIngredients: RecursiveIngredient[],
+        steps: Step[]
+    ) {
         super();
         this.id = 0;
         this.info = info;
@@ -70,9 +84,32 @@ export class Recipe extends BaseEntity {
     }
 }
 
+export class RecipeCache {
+    private cache: Record<number, Recipe> = {};
+
+    static async fetchRecipe(id: number): Promise<Recipe> {
+        let res = await fetch(`/api/recipes/${id}`);
+        if (!res.ok) {
+            throw new Error(`Failed to fetch recipe: ${res.statusText}`);
+        }
+
+        return res.json();
+    }
+
+    public async get(id: number): Promise<Recipe> {
+        let recipe = this.cache[id];
+
+        if (!recipe) {
+            recipe = await RecipeCache.fetchRecipe(id);
+            this.cache[id] = recipe;
+        }
+
+        return recipe;
+    }
+}
 
 export abstract class Component {
-    public render(rootElement: HTMLElement | undefined = undefined): Element {
+    public async render(rootElement: HTMLElement | undefined = undefined): Promise<Element> {
         return document.createElement("div");
     }
 }
