@@ -130,9 +130,25 @@ export default class InfoTabView extends Component {
         let dropzone = new Dropzone(dropzoneContiner, {
             url: "/api/photo",
             paramName: "image",
-            maxFiles: 1,
+            // maxFiles: 1,
             acceptedFiles: "image/*",
             previewTemplate,
+            chunkSize: 512,
+            autoQueue: false,
+        });
+
+        dropzone.on("drop", () => {
+            dropzone.removeAllFiles();
+        });
+
+        dropzone.on("addedfiles", (files) => {
+            if (files.length > 1) {
+                dropzone.removeAllFiles();
+            }
+        });
+
+        dropzone.on("uploadprogress", (file, progress) => {
+            console.log(`File upload progress: ${progress}%`);
         });
 
         dropzone.on("success", async (file, response) => {
@@ -143,9 +159,6 @@ export default class InfoTabView extends Component {
             this.update();
         });
 
-        dropzone.on("addedfile", (file) => {
-            console.log(`File added: ${file.name}`);
-        });
         imageContainer.appendChild(dropzoneContiner);
 
         const yieldInput = document.createElement("input");
