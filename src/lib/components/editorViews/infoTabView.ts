@@ -5,6 +5,7 @@ import {
     ElementType,
     Listeners,
     UploadResponseData,
+    PlaceholderImage,
 } from "@types";
 import Dropzone from "dropzone";
 
@@ -88,34 +89,64 @@ export default class InfoTabView extends Component {
         element.appendChild(descriptionInput);
 
         // Image
+        let imageContainer = document.createElement("div");
+        imageContainer.classList.add("flex", "gap-4");
+        element.appendChild(imageContainer);
+
+        let previewImage = document.createElement("img");
+        previewImage.src = this.recipeInfo.photo || PlaceholderImage;
+        previewImage.classList.add("flex-1", "w-64", "h-64", "object-contain", "rounded-lg");
+        imageContainer.appendChild(previewImage);
+
         let dropzoneContiner = document.createElement("div");
         dropzoneContiner.classList.add(
+            "flex-1", 
             "w-full",
             "max-w-full",
             "h-64",
             "border",
             "border-dashed",
             "border-gray-300",
-            "rounded-lg"
+            "rounded-lg",
+            "flex",
+            "items-center",
+            "justify-center",
+            "gap-4",
         );
+
+        const previewTemplate = `
+        <div class="dz-preview dz-file-preview">
+            <div class="dz-details">
+                <div class="dz-filename">
+                    <span data-dz-name></span>
+                </div>
+                <img data-dz-thumbnail />
+            </div>
+            <div class="dz-progress">
+                <span class="dz-upload" data-dz-uploadprogress>
+            </span>
+        </div>`;
+
         let dropzone = new Dropzone(dropzoneContiner, {
             url: "/api/photo",
             paramName: "image",
             maxFiles: 1,
             acceptedFiles: "image/*",
+            previewTemplate,
         });
 
         dropzone.on("success", async (file, response) => {
             await getToast().toast("success", "Image uploaded successfully");
             const res = response as UploadResponseData;
             this.recipeInfo.photo = res.path;
+            previewImage.src = res.path;
             this.update();
         });
 
         dropzone.on("addedfile", (file) => {
             console.log(`File added: ${file.name}`);
         });
-        element.appendChild(dropzoneContiner);
+        imageContainer.appendChild(dropzoneContiner);
 
         const yieldInput = document.createElement("input");
         yieldInput.type = "number";
