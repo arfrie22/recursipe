@@ -73,6 +73,8 @@ export default class Editor extends Component {
       this.recipe = recipe;
     }
 
+    sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+
     // Save recipe to session storage by sending a save event
     const save = () => {
       this.eventListeners.save.forEach((listener) =>
