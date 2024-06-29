@@ -5,6 +5,7 @@ import { isAdmin, requireAuth } from "./middleware";
 import multer from "multer";
 import Jimp from "jimp";
 import path from "path";
+import fsPromise from "fs/promises";
 
 function loadRecipeEndpoints(): Router {
     const apiRouter = Router();
@@ -102,6 +103,8 @@ function loadPhotoUploadEndpoints(): Router {
             const img = await Jimp.read(file.path);
             const p = path.join("photos", `${file.filename}.jpg`);
             await img.writeAsync(path.join(__dirname, p));
+
+            await fsPromise.rm(file.path);
 
             const data: UploadResponseData = {
                 filename: `${file.filename}.jpg`,
