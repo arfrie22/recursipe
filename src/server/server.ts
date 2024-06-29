@@ -144,8 +144,6 @@ export async function init() {
 
     app.use("/api", loadAPIEndpoints());
 
-    // const publicDir = process.env.PUBLIC_DIR || "./public";
-
     const edge = Edge.create();
     edge.mount(path.join(__dirname, 'public'));
 
