@@ -40,7 +40,7 @@ export default class RecipeCard extends Component {
     element.appendChild(figure);
 
     const img = document.createElement("img");
-    img.src = "https://placehold.co/600x400/EEE/31343C";
+    img.src = this.recipeInfo.photo || "https://placehold.co/600x400/EEE/31343C";
     img.alt = this.recipeInfo.name;
     figure.appendChild(img);
 

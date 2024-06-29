@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "node runner.mjs build",
-    "start": "PUBLIC_DIR=\"dist/public\" node dist/index.cjs",
-    "watch": "PUBLIC_DIR=\"dist/public\" node runner.mjs watch",
-    "serve": "PUBLIC_DIR=\"dist/public\" node runner.mjs serve"
+    "start": "PUBLIC_DIR=\"dist/public\" PHOTOS_DIR=\"photos\" node dist/index.cjs",
+    "watch": "PUBLIC_DIR=\"dist/public\" PHOTOS_DIR=\"photos\" node runner.mjs watch",
+    "serve": "PUBLIC_DIR=\"dist/public\" PHOTOS_DIR=\"photos\" node runner.mjs serve"
   },
   "keywords": [],
   "author": {

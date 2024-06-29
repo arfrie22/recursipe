@@ -5,7 +5,3 @@ import Dropzone from "dropzone";
 // then you need to disabled the autoDiscover behaviour here:
 Dropzone.autoDiscover = false;
 
-let myDropzone = new Dropzone("#app", { url: "/api/photo", paramName: "image" });
-myDropzone.on("addedfile", (file) => {
-    console.log(`File added: ${file.name}`);
-});

@@ -140,12 +140,14 @@ export async function init() {
 
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
+    app.use("/photos", express.static(path.join(__dirname, "photos")));
+
     app.use("/api", loadAPIEndpoints());
 
-    const publicDir = process.env.PUBLIC_DIR || "./public";
+    // const publicDir = process.env.PUBLIC_DIR || "./public";
 
     const edge = Edge.create();
-    edge.mount(publicDir);
+    edge.mount(path.join(__dirname, 'public'));
 
     // app.get("/", async (req, res) => {
     //     const data = {};
@@ -154,7 +156,7 @@ export async function init() {
     //     res.contentType("text/html").send(html);
     // });
 
-    app.use(express.static(publicDir));
+    app.use(express.static(path.join(__dirname, 'public')));
 
     const host = process.env.HOST || "localhost";
     const port = Number.parseInt(process.env.PORT || "") || 4000;

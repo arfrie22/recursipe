@@ -9,6 +9,17 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 
+export const PlaceholderImage = "https://placehold.co/600x400/EEE/31343C";
+
+export interface UploadResponseData {
+    filename: string;
+    mimetype: string;
+    originalname: string;
+    size: number;
+    fieldname: string;
+    path: string;
+}
+
 export interface Ingredient {
     name: string;
     quantity: number;

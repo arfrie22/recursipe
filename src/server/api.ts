@@ -1,10 +1,10 @@
-import { Recipe } from "@types";
+import { Recipe, UploadResponseData } from "@types";
 import { Request, Response, Router } from "express";
 import { DataSource } from "typeorm";
 import { isAdmin, requireAuth } from "./middleware";
 import multer from "multer";
 import Jimp from "jimp";
-import fs from 'fs';
+import path from "path";
 
 function loadRecipeEndpoints(): Router {
     const apiRouter = Router();
@@ -100,15 +100,18 @@ function loadPhotoUploadEndpoints(): Router {
             }
 
             const img = await Jimp.read(file.path);
-            await img.writeAsync(`images/${file.filename}.jpg`)
+            const p = path.join("photos", `${file.filename}.jpg`);
+            await img.writeAsync(path.join(__dirname, p));
 
-            res.status(200).send({
+            const data: UploadResponseData = {
                 filename: `${file.filename}.jpg`,
                 mimetype: file.mimetype,
                 originalname: file.originalname,
                 size: file.size,
                 fieldname: file.fieldname,
-            });
+                path: `/${p}`,
+            }
+            res.status(200).send(data);
         });
     });
 
