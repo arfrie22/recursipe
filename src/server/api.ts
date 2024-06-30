@@ -1,6 +1,6 @@
 import { Recipe, UploadResponseData } from "@types";
 import { Request, Response, Router } from "express";
-import { DataSource } from "typeorm";
+import { DataSource, ILike } from "typeorm";
 import { isAdmin, requireAuth } from "./middleware";
 import multer from "multer";
 import Jimp from "jimp";
@@ -11,11 +11,16 @@ function loadRecipeEndpoints(): Router {
     const apiRouter = Router();
     apiRouter.use(requireAuth, isAdmin);
     apiRouter.get("/", async function (req: Request, res: Response) {
+        let searchTerm = req.query.search as string;
+        if (!searchTerm) {
+            searchTerm = "";
+        }
+
         const dataSource: DataSource = res.locals.dataSource;
-        const recipes = (await dataSource.getRepository(Recipe).find()).sort(
+        const recipes = (await dataSource.getRepository(Recipe).findBy({name: ILike(`%${searchTerm}%`)})).sort(
             (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
         );
-        res.json(recipes);
+        res.json(recipes.map((r) => r.recipeData()));
     });
 
     apiRouter.get("/:id", async function (req: Request, res: Response) {
@@ -31,14 +36,14 @@ function loadRecipeEndpoints(): Router {
         if (!results) {
             return res.status(404).send("Recipe not found");
         }
-        return res.send(results);
+        return res.send(results.recipeData());
     });
 
     apiRouter.post("/", async function (req: Request, res: Response) {
         const dataSource: DataSource = res.locals.dataSource;
         const recipe = dataSource.getRepository(Recipe).create(req.body);
         const results = await dataSource.getRepository(Recipe).save(recipe);
-        return res.send(results);
+        return res.status(201).send(results.map((r) => r.recipeData()));
     });
 
     apiRouter.put("/:id", async function (req: Request, res: Response) {
@@ -55,7 +60,7 @@ function loadRecipeEndpoints(): Router {
 
         dataSource.getRepository(Recipe).merge(recipe, req.body);
         const results = await dataSource.getRepository(Recipe).save(recipe);
-        return res.send(results);
+        return res.send(results.recipeData());
     });
 
     apiRouter.delete("/:id", async function (req: Request, res: Response) {
@@ -63,7 +68,12 @@ function loadRecipeEndpoints(): Router {
         const results = await dataSource
             .getRepository(Recipe)
             .delete(req.params.id);
-        return res.send(results);
+
+        if (results.affected === 0) {
+            return res.status(404).send("Recipe not found");
+        }
+        
+        return res.status(204).send();
     });
 
     return apiRouter;

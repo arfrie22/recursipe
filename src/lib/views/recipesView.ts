@@ -54,7 +54,7 @@ export default class RecipesView extends Component {
 
     // Add new recipe card with event listeners
     for (const recipe of this.recipes) {
-      const card = new RecipeCard(recipe.info);
+      const card = new RecipeCard(recipe.info());
       card.on("edit", (event) => {
         this.eventListeners.edit.forEach((listener) =>
           listener(

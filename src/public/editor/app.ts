@@ -1,25 +1,11 @@
 import "reflect-metadata";
 import { ArrowLeft, Plus } from "lucide";
 import IconButton from "@components/iconButton";
-import { Recipe, TimeType } from "@types";
+import { Recipe, RecipeData, TimeType } from "@types";
 import Editor from "@views/editor";
 import RecipesView from "@views/recipesView";
 import { addRerenderListener, rerender } from "@lib";
 import { getToast } from "@components/toast";
-
-function makeDefaultRecipe(): Recipe {
-    return new Recipe(
-        {
-            name: "",
-            description: "",
-            yield: 0,
-            yieldUnit: "",
-        },
-        [],
-        [],
-        []
-    );
-}
 
 export class App {
     private rootElement: HTMLElement;
@@ -60,7 +46,7 @@ export class App {
         this.editing = true;
         sessionStorage.setItem("editing", "true");
         sessionStorage.setItem("editNew", this.editNew ? "true" : "false");
-        this.editor = new Editor(recipe || makeDefaultRecipe());
+        this.editor = new Editor(recipe || new Recipe());
 
         this.editor.on("save", async (event) => {
             try {
@@ -73,7 +59,7 @@ export class App {
                         body: JSON.stringify(event.detail),
                     });
 
-                    if (res.status !== 200) {
+                    if (!res.ok) {
                         throw new Error("Failed to save recipe");
                     }
 
@@ -126,10 +112,11 @@ export class App {
     private async getRecipes() {
         try {
             const res = await fetch("/api/recipes");
-            if (res.status !== 200) {
+            if (!res.ok) {
                 throw new Error("Failed to load recipes");
             }
-            this.recipes = await res.json();
+            const data = await res.json() as RecipeData[];
+            this.recipes = data.map((r) => new Recipe(r));
         } catch (error) {
             console.error(error);
             await getToast().toast("error", "Failed to load recipes");
@@ -209,7 +196,7 @@ export class App {
                         method: "DELETE",
                     });
 
-                    if (res.status !== 200) {
+                    if (!res.ok) {
                         throw new Error("Failed to delete recipe");
                     }
                 } catch (error) {

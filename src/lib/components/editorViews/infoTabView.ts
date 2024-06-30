@@ -134,7 +134,7 @@ export default class InfoTabView extends Component {
             acceptedFiles: "image/*",
             previewTemplate,
             chunkSize: 512,
-            autoQueue: false,
+            // autoQueue: false,
         });
 
         dropzone.on("drop", () => {

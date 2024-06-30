@@ -2,7 +2,6 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    OneToMany,
     BaseEntity,
     CreateDateColumn,
     DeleteDateColumn,
@@ -51,13 +50,33 @@ export interface RecipeInfo {
     yieldUnit: string;
 }
 
+export interface RecipeData {
+    id?: number;
+    info: RecipeInfo;
+    ingredients: Ingredient[];
+    recursiveIngredients: RecursiveIngredient[];
+    steps: Step[];
+}
+
 @Entity()
 export class Recipe extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: "jsonb" })
-    info: RecipeInfo;
+    @Column({ type: "text" })
+    name: string;
+
+    @Column({ type: "text" })
+    description: string;
+
+    @Column({ type: "text", nullable: true })
+    photo?: string;
+
+    @Column({ type: "float" })
+    yield: number;
+
+    @Column({ type: "text" })
+    yieldUnit: string;
 
     @Column({ type: "jsonb" })
     ingredients: Ingredient[];
@@ -77,18 +96,63 @@ export class Recipe extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date | null;
 
+    public info(): RecipeInfo {
+        return {
+            name: this.name,
+            description: this.description,
+            photo: this.photo,
+            yield: this.yield,
+            yieldUnit: this.yieldUnit,
+        };
+    }
+
+    public updateInfo(info: RecipeInfo) {
+        this.name = info.name;
+        this.description = info.description;
+        this.photo = info.photo;
+        this.yield = info.yield;
+        this.yieldUnit = info.yieldUnit;
+    }
+
+    public recipeData(): RecipeData {
+        return {
+            id: this.id,
+            info: this.info(),
+            ingredients: this.ingredients,
+            recursiveIngredients: this.recursiveIngredients,
+            steps: this.steps,
+        };
+    }
+
     constructor(
-        info: RecipeInfo,
-        ingredients: Ingredient[],
-        recursiveIngredients: RecursiveIngredient[],
-        steps: Step[]
+        recipeData?: RecipeData,
     ) {
         super();
-        this.id = 0;
-        this.info = info;
-        this.ingredients = ingredients;
-        this.recursiveIngredients = recursiveIngredients;
-        this.steps = steps;
+        
+        if (recipeData) {
+            const { info, ingredients, recursiveIngredients, steps } = recipeData;
+
+            this.id = recipeData.id || 0;
+            this.name = info.name;
+            this.description = info.description;
+            this.photo = info.photo;
+            this.yield = info.yield;
+            this.yieldUnit = info.yieldUnit;
+            this.ingredients = ingredients;
+            this.recursiveIngredients = recursiveIngredients;
+            this.steps = steps;
+        } else {
+            this.id = 0;
+            this.name = "";
+            this.description = "";
+            this.photo = "";
+            this.yield = 0;
+            this.yieldUnit = "";
+            this.ingredients = [];
+            this.recursiveIngredients = [];
+            this.steps = [];
+        }
+
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.deletedAt = null;

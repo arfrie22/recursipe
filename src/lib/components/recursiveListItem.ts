@@ -37,7 +37,7 @@ class RecursiveListItemInner extends Component {
         element.appendChild(quantity);
 
         const name = document.createElement("span");
-        name.textContent = await this.recipeCache.get(this.recursiveIngredient.id).then(recipe => recipe.info.name);
+        name.textContent = await this.getRecipeName();
         element.appendChild(name);
 
         if (rootElement) {

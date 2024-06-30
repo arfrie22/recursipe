@@ -65,7 +65,7 @@ export default class Editor extends Component {
     const localRecipe = sessionStorage.getItem("editorRecipe");
     if (localRecipe) {
       try {
-        this.recipe = JSON.parse(localRecipe);
+        this.recipe = new Recipe(JSON.parse(localRecipe));
       } catch (error) {
         this.recipe = recipe;
       }
@@ -73,7 +73,7 @@ export default class Editor extends Component {
       this.recipe = recipe;
     }
 
-    sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+    sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe.recipeData()));
 
     // Save recipe to session storage by sending a save event
     const save = () => {
@@ -87,10 +87,10 @@ export default class Editor extends Component {
     };
 
     // Set up tab views and event listeners
-    this.infoTabView = new InfoTabView(this.recipe.info);
+    this.infoTabView = new InfoTabView(this.recipe.info());
     this.infoTabView.on("update", (event) => {
-      this.recipe.info = event.detail;
-      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+      this.recipe.updateInfo(event.detail);
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe.recipeData()));
     });
 
     this.infoTabView.on("save", (event) => {
@@ -100,7 +100,7 @@ export default class Editor extends Component {
     this.ingredientsTabView = new IngredientsTabView(this.recipe.ingredients);
     this.ingredientsTabView.on("update", (event) => {
       this.recipe.ingredients = event.detail;
-      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe.recipeData()));
     });
 
     this.ingredientsTabView.on("save", (event) => {
@@ -110,7 +110,7 @@ export default class Editor extends Component {
     this.recursionTabView = new RecursionTabView(this.recipe.recursiveIngredients, this.recipeCache);
     this.recursionTabView.on("update", (event) => {
       this.recipe.recursiveIngredients = event.detail;
-      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe.recipeData()));
     });
 
     this.recursionTabView.on("save", (event) => {
@@ -120,7 +120,7 @@ export default class Editor extends Component {
     this.stepsTabView = new StepsTabView(this.recipe.steps);
     this.stepsTabView.on("update", (event) => {
       this.recipe.steps = event.detail;
-      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe));
+      sessionStorage.setItem("editorRecipe", JSON.stringify(this.recipe.recipeData()));
     });
 
     this.stepsTabView.on("save", (event) => {

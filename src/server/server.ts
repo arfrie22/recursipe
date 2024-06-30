@@ -24,15 +24,15 @@ export async function init() {
         entities: [Recipe],
     });
     
-    const demoRecipe: Recipe = new Recipe(
-        {
+    const demoRecipe: Recipe = new Recipe({
+        info: {
             name: "Vanilla Ice Cream",
             description:
                 "A very simple vanilla ice cream recipe. Based on the recipe from the amazing David Lebovitz.",
             yield: 2,
             yieldUnit: "pt",
         },
-        [
+        ingredients: [
             {
                 name: "heavy cream",
                 quantity: 2,
@@ -59,8 +59,8 @@ export async function init() {
                 unit: "tsp",
             },
         ],
-        [],
-        [
+        recursiveIngredients: [],
+        steps: [
             {
                 direction:
                     "In a medium saucepan, warm 1 cup of the cream with the sugar, and salt till simmering.",
@@ -79,25 +79,25 @@ export async function init() {
                 timeType: TimeType.Preparation,
             },
         ]
-    );
+    });
 
-    const demoRecipe2: Recipe = new Recipe(
-        {
+    const demoRecipe2: Recipe = new Recipe({
+        info: {
             name: "Ice Cream 2",
             description:
                 "If ice cream is so good why haven't they made an ice cream 2?",
             yield: 4,
             yieldUnit: "pt",
         },
-        [],
-        [
+        ingredients: [],
+        recursiveIngredients: [
             {
                 id: 0,
                 quantity: 2,
             }
         ],
-        []
-    );
+        steps: []
+    });
 
     await dataSource.initialize();
 
