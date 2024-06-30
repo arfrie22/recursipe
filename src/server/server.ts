@@ -1,8 +1,8 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import { ExpressAuth } from "@auth/express";
 import { TypeORMAdapter } from "@auth/typeorm-adapter";
 import Google from "@auth/express/providers/google";
-import { Edge } from "edge.js";
+import { engine as handlebarsEngine } from 'express-handlebars';
 import { DataSource } from "typeorm";
 import { Recipe, TimeType } from "@types";
 import favicon from "serve-favicon";
@@ -131,6 +131,13 @@ export async function init() {
 
     app.use(authSession(authConfig));
 
+    app.engine('.hbs', handlebarsEngine({
+        extname: '.hbs',
+        defaultLayout: false
+    }));
+    app.set('view engine', '.hbs');
+    app.set('views', path.join(__dirname, 'views'));
+
     app.use(express.json());
     
     app.use((req, res, next) => {
@@ -138,23 +145,41 @@ export async function init() {
         next();
     });
 
-    app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+    app.use(favicon(path.join(__dirname, 'static', 'favicon.ico')))
 
+    app.get("/editor", function (req: Request, res: Response) {
+        if (!res.locals.session) {
+            return res.redirect("/auth/signin");
+        }
+
+        const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
+        if (!adminEmails.includes(res.locals.session.user.email)) {
+            return res.render("error", {
+                code: 403,
+                message: "Forbidden",
+                description: "You do not have permission to access this page."
+            });
+        }
+
+        res.render("editor");
+    });
     app.use("/photos", express.static(path.join(__dirname, "photos")));
 
     app.use("/api", loadAPIEndpoints());
 
-    const edge = Edge.create();
-    edge.mount(path.join(__dirname, 'public'));
-
-    // app.get("/", async (req, res) => {
-    //     const data = {};
-    //     const html = await edge.render("index", data);
-
-    //     res.contentType("text/html").send(html);
-    // });
-
     app.use(express.static(path.join(__dirname, 'public')));
+
+    app.get("/", function (req: Request, res: Response) {
+        res.render("index");
+    });
+
+    app.get("*", function (req: Request, res: Response) {
+        return res.render("error", {
+            code: 404,
+            message: "Not Found",
+            description: "The requested resource was not found on this server."
+        });
+    });
 
     const host = process.env.HOST || "localhost";
     const port = Number.parseInt(process.env.PORT || "") || 4000;

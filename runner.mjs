@@ -5,7 +5,8 @@ import * as esbuild from 'esbuild';
 import postCssPlugin from '@deanc/esbuild-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
-import { ChildProcess, spawn } from 'child_process';
+import { spawn } from 'child_process';
+import glob from 'fast-glob';
 
 async function buildServer() {
     await esbuild.build({
@@ -19,35 +20,41 @@ async function buildServer() {
 
 
 async function buildFrontend() {
+    const entryPoints = [
+        {
+            in: 'src/static/favicon.ico',
+            out: 'static/favicon',
+        },
+        {
+            in: 'src/public/base.css',
+            out: 'public/base',
+        },
+    ];
+
+    await glob('src/public/**/index.ts', {onlyFiles: false}).then((files) => {
+        for (const file of files) {
+            const out = file.replace('src/public/', 'public/').replace('.ts', '');
+            entryPoints.push({
+                in: file,
+                out,
+            });
+        }
+    });
+
+    await glob('src/public/views/*.hbs', {onlyFiles: true}).then((files) => {
+        for (const file of files) {
+            const out = file.replace('src/public/', '').replace('.hbs', '');
+            entryPoints.push({
+                in: file,
+                out,
+            });
+        }
+    });
+
     await esbuild.build({
-        entryPoints: [
-            {
-                in: 'src/static/favicon.ico',
-                out: 'favicon',
-            },
-            {
-                in: 'src/public/index.html',
-                out: 'index',
-            },
-            {
-                in: 'src/public/base.css',
-                out: 'base',
-            },
-            {
-                in: 'src/public/index.ts',
-                out: 'index',
-            },
-            {
-                in: 'src/public/editor/index.html',
-                out: 'editor/index',
-            },
-            {
-                in: 'src/public/editor/index.ts',
-                out: 'editor/index',
-            },
-        ],
+        entryPoints,
         loader: {
-            ".html": "copy",
+            ".hbs": "copy",
             ".ico": "copy",
         },
         plugins: [
@@ -57,7 +64,7 @@ async function buildFrontend() {
             }),
         ],
         bundle: true,
-        outdir: 'dist/public',
+        outdir: 'dist',
         platform: 'browser',
     });
 }
