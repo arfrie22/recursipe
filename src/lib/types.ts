@@ -168,7 +168,7 @@ export class RecipeCache {
             throw new Error(`Failed to fetch recipe: ${res.statusText}`);
         }
 
-        return res.json();
+        return new Recipe(await res.json());
     }
 
     public async get(id: number): Promise<Recipe> {

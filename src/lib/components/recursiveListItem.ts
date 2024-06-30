@@ -20,7 +20,7 @@ class RecursiveListItemInner extends Component {
 
     private getRecipeName = async () => {
         try {
-            return await this.recipeCache.get(this.recursiveIngredient.id).then(recipe => recipe.info.name);
+            return await this.recipeCache.get(this.recursiveIngredient.id).then(recipe => recipe.name);
         } catch (error) {
             console.error(error);
             await getToast().toast("error", "Failed to get recipe name");

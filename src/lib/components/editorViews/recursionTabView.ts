@@ -78,7 +78,7 @@ export default class RecursionTabView extends Component {
             const id = recursiveIngredient.id;
 
             try {
-                return (await this.recipeCache.get(id)).info.name;
+                return (await this.recipeCache.get(id)).name;
             } catch (error) {
                 await getToast().toast("error", "Failed to get ingredient name");
                 console.error(`Failed to get ingredient name: ${error}`);
