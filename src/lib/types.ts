@@ -171,6 +171,18 @@ export class RecipeCache {
         return new Recipe(await res.json());
     }
 
+    public async search(searchTerm: string): Promise<Recipe[]> {
+        let res = await fetch(`/api/recipes?search=${searchTerm}`);
+        if (!res.ok) {
+            throw new Error(`Failed to search for recipes: ${res.statusText}`);
+        }
+
+        const recipeData = await res.json() as RecipeData[];
+        const recipes = recipeData.map((r: RecipeData) => new Recipe(r));
+        recipes.forEach((r) => this.cache[r.id] = r);
+        return recipes;
+    }
+
     public async get(id: number): Promise<Recipe> {
         let recipe = this.cache[id];
 

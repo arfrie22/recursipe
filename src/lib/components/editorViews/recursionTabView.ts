@@ -149,19 +149,66 @@ export default class RecursionTabView extends Component {
         });
         dialogBox.appendChild(dialogContent);
 
-        // TODO: Add a search bar to search for ingredients (typeahead)
         const idInput = document.createElement("input");
         idInput.type = "number";
-        idInput.min = "0";
-        idInput.value = "0";
-        idInput.placeholder = "ID";
-        idInput.classList.add(
-            "input",
-            "input-bordered",
-            "w-full",
-            "max-w-full"
-        );
+        idInput.hidden = true;
         dialogContent.appendChild(idInput);
+
+
+        const searchDropdown = document.createElement("div");
+        searchDropdown.classList.add("dropdown");
+        dialogContent.appendChild(searchDropdown);
+
+        const recipeSearch = document.createElement("input");
+        const search = async (event: Event) => {
+            dropdownContent.innerHTML = "";
+            const search = (event.target as HTMLInputElement).value;
+            if (!search) {
+                recipeSearch.setCustomValidity("Please search for a valid recipe");
+            } else {
+                const results = await this.recipeCache.search(search.toLocaleLowerCase());
+
+                for (const result of results) {
+                    const item = document.createElement("li");
+                    const link = document.createElement("a");
+                    link.textContent = result.name;
+                    link.addEventListener("click", async () => {
+                        idInput.value = result.id.toString();
+                        recipeSearch.setCustomValidity("");
+                        recipeSearch.value = result.name;
+                        dropdownContent.innerHTML = "";
+                    });
+                    item.appendChild(link);
+                    dropdownContent.appendChild(item);
+
+                    if (dropdownContent.children.length > 5) {
+                        break;
+                    }
+
+                    if (result.name.toLocaleLowerCase() === search.toLocaleLowerCase()) {
+                        idInput.value = result.id.toString();
+                        recipeSearch.setCustomValidity("");
+                    }
+                }
+            }
+        }
+
+        recipeSearch.type = "search";
+        recipeSearch.tabIndex = 0;
+        recipeSearch.placeholder = "Search for an ingredient";
+        recipeSearch.classList.add("input", "input-bordered", "w-full", "max-w-full");
+        recipeSearch.setCustomValidity("Please search for a valid recipe");
+        recipeSearch.addEventListener("input", async (event) => {
+            recipeSearch.setCustomValidity("Please search for a valid recipe");
+            search(event);
+        });
+        recipeSearch.addEventListener("focus", search);
+        searchDropdown.appendChild(recipeSearch);
+
+        const dropdownContent = document.createElement("ul");
+        dropdownContent.tabIndex = 0;
+        dropdownContent.classList.add("dropdown-content", "menu", "bg-base-100", "rounded-box", "z-[1]", "w-52", "p-2", "shadow");
+        searchDropdown.appendChild(dropdownContent);
 
         const quantityInput = document.createElement("input");
         quantityInput.type = "number";
