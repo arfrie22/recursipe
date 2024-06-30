@@ -2,9 +2,9 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import { ExpressAuth } from "@auth/express";
 import { TypeORMAdapter } from "@auth/typeorm-adapter";
 import Google from "@auth/express/providers/google";
-import { engine as handlebarsEngine } from 'express-handlebars';
+import { engine as handlebarsEngine } from "express-handlebars";
 import { DataSource } from "typeorm";
-import { Recipe, TimeType } from "@types";
+import { PlaceholderImage, Recipe, TimeType } from "@types";
 import favicon from "serve-favicon";
 import path from "path";
 import { loadAPIEndpoints } from "./api";
@@ -13,7 +13,7 @@ import { authSession } from "./middleware";
 export async function init() {
     const app: Application = express();
 
-   const dataSource = new DataSource({
+    const dataSource = new DataSource({
         type: "postgres",
         database: process.env.TYPEORM_DATABASE || "auth",
         username: process.env.TYPEORM_USERNAME || "postgres",
@@ -23,7 +23,7 @@ export async function init() {
         synchronize: true,
         entities: [Recipe],
     });
-    
+
     const demoRecipe: Recipe = new Recipe({
         info: {
             name: "Vanilla Ice Cream",
@@ -78,7 +78,7 @@ export async function init() {
                 time: 10,
                 timeType: TimeType.Preparation,
             },
-        ]
+        ],
     });
 
     const demoRecipe2: Recipe = new Recipe({
@@ -94,9 +94,9 @@ export async function init() {
             {
                 id: 0,
                 quantity: 2,
-            }
+            },
         ],
-        steps: []
+        steps: [],
     });
 
     await dataSource.initialize();
@@ -116,7 +116,7 @@ export async function init() {
 
     const authConfig = {
         providers: [Google],
-        sessionName: 'session',
+        sessionName: "session",
         adapter: TypeORMAdapter({
             ...dataSource.options,
             entities: [],
@@ -124,28 +124,31 @@ export async function init() {
         }),
     };
 
-    app.use(
-        "/auth/*",
-        ExpressAuth(authConfig)
-    );
+    app.use("/auth/*", ExpressAuth(authConfig));
 
     app.use(authSession(authConfig));
 
-    app.engine('.hbs', handlebarsEngine({
-        extname: '.hbs',
-        defaultLayout: false
-    }));
-    app.set('view engine', '.hbs');
-    app.set('views', path.join(__dirname, 'views'));
+    app.engine(
+        ".hbs",
+        handlebarsEngine({
+            extname: ".hbs",
+            defaultLayout: false,
+            helpers: {
+                PlaceholderImage: (context: any) => PlaceholderImage,
+            },
+        })
+    );
+    app.set("view engine", ".hbs");
+    app.set("views", path.join(__dirname, "views"));
 
     app.use(express.json());
-    
+
     app.use((req, res, next) => {
         res.locals.dataSource = dataSource;
         next();
     });
 
-    app.use(favicon(path.join(__dirname, 'static', 'favicon.ico')))
+    app.use(favicon(path.join(__dirname, "static", "favicon.ico")));
 
     app.get("/editor", function (req: Request, res: Response) {
         if (!res.locals.session) {
@@ -157,7 +160,7 @@ export async function init() {
             return res.render("error", {
                 code: 403,
                 message: "Forbidden",
-                description: "You do not have permission to access this page."
+                description: "You do not have permission to access this page.",
             });
         }
 
@@ -167,17 +170,20 @@ export async function init() {
 
     app.use("/api", loadAPIEndpoints());
 
-    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.static(path.join(__dirname, "public")));
 
-    app.get("/", function (req: Request, res: Response) {
-        res.render("index");
+    app.get("/", async function (req: Request, res: Response) {
+        const recipes = (await dataSource.getRepository(Recipe).find()).sort(
+            (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
+        );
+        res.render("index", { recipes });
     });
 
     app.get("*", function (req: Request, res: Response) {
         return res.render("error", {
             code: 404,
             message: "Not Found",
-            description: "The requested resource was not found on this server."
+            description: "The requested resource was not found on this server.",
         });
     });
 

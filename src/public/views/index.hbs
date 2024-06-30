@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>Recursipe</title>
+    <link rel="stylesheet" href="/base.css">
+</head>
+
+<body>
+    <div class="flex justify-center items-center h-screen">
+        <div class="grid flex-1 center-content justify-items-center gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+            {{#each recipes}}
+            <a href="/recipe/{{this.id}}">
+                <div class="card bg-base-100 w-96 shadow-xl">
+                    <figure>
+                        {{#if this.photo}}
+                        <img src="{{this.photo}}" alt={{this.name}} />
+                        {{else}}
+                        <img src={{PlaceholderImage}} alt={{this.name}} />
+                        {{/if}}
+                    </figure>
+                    <div class="card-body">
+                        <h2 class="card-title">{{this.name}}</h2>
+                        <p>{{this.description}}</p>
+                    </div>
+                </div>
+            </a>
+            {{/each}}
+        </div>
+</body>
+
+</html>
