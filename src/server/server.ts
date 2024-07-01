@@ -3,8 +3,8 @@ import { ExpressAuth } from "@auth/express";
 import { TypeORMAdapter } from "@auth/typeorm-adapter";
 import Google from "@auth/express/providers/google";
 import { engine as handlebarsEngine } from "express-handlebars";
-import { DataSource } from "typeorm";
-import { PlaceholderImage, Recipe, TimeType } from "@types";
+import { DataSource, In } from "typeorm";
+import { Ingredient, PlaceholderImage, Recipe, TimeType } from "@types";
 import favicon from "serve-favicon";
 import path from "path";
 import { loadAPIEndpoints } from "./api";
@@ -134,7 +134,21 @@ export async function init() {
             extname: ".hbs",
             defaultLayout: false,
             helpers: {
-                PlaceholderImage: (context: any) => PlaceholderImage,
+                PlaceholderImage: () => PlaceholderImage,
+                Dividerify: (obejects: object[]) => {
+                    const result = [];
+                    for (let i = 0; i < obejects.length; i++) {
+                        if (i !== 0) {
+                            result.push({ divider: true });
+                        }
+                        result.push({
+                            data: obejects[i],
+                            divider: false,
+                        });
+                    }
+
+                    return result;
+                },
             },
         })
     );
@@ -177,6 +191,153 @@ export async function init() {
             (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
         );
         res.render("index", { recipes });
+    });
+
+    interface DecomposeResults {
+        id: number;
+        depth: number;
+        multiplier: number;
+    }
+
+    function decomposeRecipe(recipe: Recipe, recipeCache: Record<number, Recipe>, seen: Set<number>): DecomposeResults[] {
+        if (seen.has(recipe.id)) {
+            throw new Error("Circular reference detected");
+        }
+
+        seen.add(recipe.id);
+        const results: DecomposeResults[] = [{
+            id: recipe.id,
+            depth: seen.size,
+            multiplier: 1,
+        }];
+
+        for (const ingredient of recipe.recursiveIngredients) {
+            const subRecipe = recipeCache[ingredient.id];
+            const subResults = decomposeRecipe(subRecipe, recipeCache, new Set(seen));
+            for (const result of subResults) {
+                results.push({
+                    id: result.id,
+                    depth: result.depth,
+                    multiplier: result.multiplier * ingredient.quantity,
+                });
+            }
+        }
+
+        return results;
+    }
+
+    function combineResults(results: DecomposeResults[]): DecomposeResults[] {
+        const combined: Record<number, DecomposeResults> = {};
+        for (const result of results) {
+            if (!combined[result.id]) {
+                combined[result.id] = result;
+            } else {
+                combined[result.id].multiplier += result.multiplier;
+                combined[result.id].depth = Math.max(combined[result.id].depth, result.depth);
+            }
+        }
+
+        const list = Object.values(combined);
+        list.sort((a, b) => b.depth - a.depth);
+
+        return list;
+    }
+
+    app.get("/recipe/:id", async function (req: Request, res: Response) {
+        const id = Number.parseInt(req.params.id);
+        if (!id) {
+            return res.render("error", {
+                code: 400,
+                message: "Bad Request",
+                description: "The request was malformed.",
+            });
+        }
+
+        let recipeQueue = new Set([id]);
+        const recipeCache: Record<number, Recipe> = {};
+
+        while (recipeQueue.size > 0) {
+            const recipes = await dataSource.getRepository(Recipe).findBy({
+                id: In([...recipeQueue]),
+            });
+
+            if (recipes.length !== recipeQueue.size) {
+                return res.render("error", {
+                    code: 404,
+                    message: "Not Found",
+                    description:
+                        "The requested resource was not found on this server.",
+                });
+            }
+
+            for (const recipe of recipes) {
+                recipeCache[recipe.id] = recipe;
+            }
+
+            recipeQueue = new Set();
+
+            for (const recipe of recipes) {
+                for (const ingredient of recipe.recursiveIngredients) {
+                    if (!recipeCache[ingredient.id]) {
+                        recipeQueue.add(ingredient.id);
+                    }
+                }
+            }
+        }
+
+        let recipe = recipeCache[id];
+
+        try {
+            const decomposed = decomposeRecipe(recipe, recipeCache, new Set());
+            const combined = combineResults(decomposed);
+
+            const data = combined.map((result) => {
+                const subRecipe = recipeCache[result.id];
+                if (!subRecipe) {
+                    throw new Error("Recipe not found");
+                }
+
+                const ingredients = subRecipe.ingredients.map((ingredient) => {
+                    return {
+                        name: ingredient.name,
+                        quantity: ingredient.quantity * result.multiplier,
+                        unit: ingredient.unit,
+                    };
+                });
+
+                for (const recursive of recipe.recursiveIngredients) {
+                    const recipe = recipeCache[recursive.id];
+                    if (!recipe) {
+                        throw new Error("Recipe not found");
+                    }
+
+                    ingredients.push({
+                        name: recipe.name,
+                        quantity: recursive.quantity * result.multiplier,
+                        unit: recipe.yieldUnit,
+                    });
+                }
+
+                return {
+                    name: subRecipe.name,
+                    ingredients,
+                    steps: subRecipe.steps,
+                };
+            });
+
+            return res.render("recipe", { 
+                name: recipe.name,
+                description: recipe.description,
+                photo: recipe.photo,
+                data,
+            });
+        } catch (e) {
+            return res.render("error", {
+                code: 500,
+                message: "Internal Server Error",
+                description: "An internal server error occurred",
+            });
+        }
     });
 
     app.get("*", function (req: Request, res: Response) {
