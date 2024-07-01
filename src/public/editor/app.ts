@@ -138,17 +138,11 @@ export class App {
         this.rootElement.appendChild(div);
 
         const navbar = document.createElement("div");
-        navbar.classList.add("navbar", "bg-base-100");
+        navbar.classList.add("navbar", "bg-base-100", "justify-between", "g-4");
         div.appendChild(navbar);
 
-        const title = document.createElement("div");
-        title.classList.add("flex-1");
-        navbar.appendChild(title);
-
-        const titleText = document.createElement("a");
-        titleText.classList.add("btn", "btn-ghost", "text-xl");
-        titleText.textContent = "Recursipe";
-        title.appendChild(titleText);
+        const actionButton = document.createElement("div");
+        navbar.appendChild(actionButton);
 
         // If editing, show a cancel button otherwise show a new button to add a new recipe
         if (this.editing) {
@@ -165,7 +159,7 @@ export class App {
                 rerender();
             });
 
-            await cancelButton.render(navbar);
+            await cancelButton.render(actionButton);
         } else {
             const newButton = new IconButton(Plus);
             newButton.on("click", () => {
@@ -174,9 +168,24 @@ export class App {
                 rerender();
             });
 
-            await newButton.render(navbar);
+            await newButton.render(actionButton);
         }
 
+        const title = document.createElement("div");
+        navbar.appendChild(title);
+
+        const titleText = document.createElement("span");
+        titleText.classList.add("text-xl", "font-bold");
+        titleText.textContent = "Recursipe";
+        title.appendChild(titleText);
+
+        const signOut = document.createElement("a");
+        signOut.classList.add("btn", "btn-primary");
+        signOut.role = "button";
+        signOut.textContent = "Sign Out";
+        signOut.href = "/auth/signout";
+        navbar.appendChild(signOut);
+        
         // If editing, render the editor otherwise render the recipes view
         if (this.editor) {
             this.editor.render(div);
