@@ -85,7 +85,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5,
     },
     fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith("image/")) {
+        if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/gif") {
             cb(null, true);
         } else {
             return cb(new Error("Invalid mime type"));

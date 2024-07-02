@@ -1,26 +1,99 @@
 <html>
+
 <head>
     <title>Recursipe</title>
     <link rel="stylesheet" href="/base.css">
 </head>
 
 <body>
-    <div class="flex justify-center items-center h-screen">
-        <div class="grid flex-1 center-content justify-items-center gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-            <div class="card bg-base-100 w-96 shadow-xl">
-                <figure>
+    <div class="flex flex-col justify-center items-center gap-4 p-4">
+        <div class="flex flex-col justify-center items-center gap-4 p-4 w-full max-w-2xl">
+            <div class="flex max-sm:flex-col justify-center items-center gap-4">
+                <figure class="w-20">
                     {{#if photo}}
-                    <img src="{{photo}}" alt={{name}} />
+                    <img src="{{photo}}" alt="{{name}}" />
                     {{else}}
-                    <img src={{PlaceholderImage}} alt={{name}} />
+                    <img src={{PlaceholderImage}} alt="{{name}}" />
                     {{/if}}
                 </figure>
-                <div class="card-body">
-                    <h2 class="card-title">{{name}}</h2>
-                    <p>{{description}}</p>
+                <div class="flex flex-col justify-center items-center gap-4">
+                    <h2 class="text-2xl font-bold">
+                        {{name}}
+                    </h2>
+                    <div class="grid sm:grid-cols-3 gap-2">
+                        <div class="flex gap-2">
+                            <i data-lucide="clock" class="h-6 w-6"></i>
+                            <label>Prep Time: </label>
+                            <p>{{time.Preparation}}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i data-lucide="clock" class="h-6 w-6"></i>
+                            <label>Wait Time: </label>
+                            <p>{{time.Waiting}}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i data-lucide="clock" class="h-6 w-6"></i>
+                            <label>Cook Time: </label>
+                            <p>{{time.Cooking}}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i data-lucide="clock" class="h-6 w-6"></i>
+                            <label>Total Time: </label>
+                            <p>{{time.Total}}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <i data-lucide="cooking-pot" class="h-6 w-6"></i>
+                            <label>Yeilds: </label>
+                            <p>{{yeild}}</p>
+                            <p>{{yeildUnit}}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="divider"></div>
+            <div class="flex flex-col gap-4 w-full">
+                <h3 class="text-lg font-semibold">Description</span>
+                    <p>{{description}}</p>
+            </div>
+            <div class="divider"></div>
+            <div class="form-control" id="wakeLock"></div>
+            <div class="divider"></div>
+            <div class="flex flex-col gap-4 w-full">
+                <h3 class="text-2xl font-bold">Ingredients</h3>
+                {{#> divider }}
+                <h2 class="text-md font-semibold">
+                    {{this.name}}
+                </h2>
+                <ul class="list-disc">
+                    {{#each this.ingredients}}
+                    <li>
+                        <span>{{this.quantity}}</span>
+                        <span>{{this.unit}}</span>
+                        <span>{{this.name}}</span>
+                    </li>
+                    {{/each}}
+                </ul>
+                {{/divider}}
+            </div>
+            <div class="divider"></div>
+            <div class="flex flex-col gap-4 w-full">
+                <h3 class="text-2xl font-bold">Steps</h3>
+                {{#> divider }}
+                <h2 class="text-md font-semibold">
+                    {{this.name}}
+                </h2>
+                <ol class="list-decimal">
+                    {{#each this.steps}}
+                    <li>
+                        <span>{{this.direction}}</span>
+                    </li>
+                    {{/each}}
+                </ol>
+                {{/divider}}
+            </div>
         </div>
+    </div>
+    <script src="/recipe/index.js" type="module" defer></script>
 </body>
 
 </html>
