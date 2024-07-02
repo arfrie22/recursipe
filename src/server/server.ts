@@ -325,10 +325,28 @@ export async function init() {
                 };
             });
 
+
+            const time: Record<TimeType | "Total", number> = {
+                [TimeType.Preparation]: 0,
+                [TimeType.Cooking]: 0,
+                [TimeType.Waiting]: 0,
+                Total: 0,
+            };
+
+            for (const result of data) {
+                for (const step of result.steps) {
+                    time[step.timeType] += step.time;
+                    time.Total += step.time;
+                }
+            }
+
             return res.render("recipe", { 
                 name: recipe.name,
                 description: recipe.description,
                 photo: recipe.photo,
+                yeild: recipe.yield,
+                yeildUnit: recipe.yieldUnit,
+                time,
                 data,
             });
         } catch (e) {
