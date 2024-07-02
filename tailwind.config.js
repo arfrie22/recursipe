@@ -6,6 +6,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require('tailwindcss-animated'), require('daisyui')],
+  plugins: [require('@tailwindcss/typography'), require('tailwindcss-animated'), require('daisyui')],
 }
 

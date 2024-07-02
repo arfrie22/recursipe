@@ -41,7 +41,7 @@ async function buildFrontend() {
         }
     });
 
-    await glob('src/public/views/*.hbs', {onlyFiles: true}).then((files) => {
+    await glob('src/public/views/**/*.hbs', {onlyFiles: true}).then((files) => {
         for (const file of files) {
             const out = file.replace('src/public/', '').replace('.hbs', '');
             entryPoints.push({

@@ -172,13 +172,18 @@ export async function init() {
         const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
         if (!adminEmails.includes(res.locals.session.user.email)) {
             return res.render("error", {
+                isSignedIn: res.locals.isSignedIn,
+                isAdmin: res.locals.isAdmin,
                 code: 403,
                 message: "Forbidden",
                 description: "You do not have permission to access this page.",
             });
         }
 
-        res.render("editor");
+        res.render("editor", {
+            isSignedIn: res.locals.isSignedIn,
+            isAdmin: res.locals.isAdmin,
+        });
     });
     app.use("/photos", express.static(path.join(__dirname, "photos")));
 
@@ -190,7 +195,11 @@ export async function init() {
         const recipes = (await dataSource.getRepository(Recipe).find()).sort(
             (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
         );
-        res.render("index", { recipes });
+        res.render("index", { 
+            isSignedIn: res.locals.isSignedIn,
+            isAdmin: res.locals.isAdmin,
+            recipes
+        });
     });
 
     interface DecomposeResults {
@@ -247,6 +256,8 @@ export async function init() {
         const id = Number.parseInt(req.params.id);
         if (!id) {
             return res.render("error", {
+                isSignedIn: res.locals.isSignedIn,
+                isAdmin: res.locals.isAdmin,
                 code: 400,
                 message: "Bad Request",
                 description: "The request was malformed.",
@@ -263,6 +274,8 @@ export async function init() {
 
             if (recipes.length !== recipeQueue.size) {
                 return res.render("error", {
+                    isSignedIn: res.locals.isSignedIn,
+                    isAdmin: res.locals.isAdmin,
                     code: 404,
                     message: "Not Found",
                     description:
@@ -341,6 +354,8 @@ export async function init() {
             }
 
             return res.render("recipe", { 
+                isSignedIn: res.locals.isSignedIn,
+                isAdmin: res.locals.isAdmin,
                 name: recipe.name,
                 description: recipe.description,
                 photo: recipe.photo,
@@ -351,6 +366,8 @@ export async function init() {
             });
         } catch (e) {
             return res.render("error", {
+                isSignedIn: res.locals.isSignedIn,
+                isAdmin: res.locals.isAdmin,
                 code: 500,
                 message: "Internal Server Error",
                 description: "An internal server error occurred",
@@ -360,6 +377,8 @@ export async function init() {
 
     app.get("*", function (req: Request, res: Response) {
         return res.render("error", {
+            isSignedIn: res.locals.isSignedIn,
+            isAdmin: res.locals.isAdmin,
             code: 404,
             message: "Not Found",
             description: "The requested resource was not found on this server.",

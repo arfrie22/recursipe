@@ -174,8 +174,10 @@ export class App {
         const title = document.createElement("div");
         navbar.appendChild(title);
 
-        const titleText = document.createElement("span");
-        titleText.classList.add("text-xl", "font-bold");
+        const titleText = document.createElement("a");
+        titleText.href = "/";
+        titleText.role = "button";
+        titleText.classList.add("text-xl", "btn", "btn-ghost");
         titleText.textContent = "Recursipe";
         title.appendChild(titleText);
 
