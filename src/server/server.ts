@@ -318,7 +318,7 @@ export async function init() {
                     };
                 });
 
-                for (const recursive of recipe.recursiveIngredients) {
+                for (const recursive of subRecipe.recursiveIngredients) {
                     const recipe = recipeCache[recursive.id];
                     if (!recipe) {
                         throw new Error("Recipe not found");
