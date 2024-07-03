@@ -1,6 +1,6 @@
 import { Recipe, UploadResponseData } from "@types";
 import { Request, Response, Router } from "express";
-import { DataSource, ILike } from "typeorm";
+import { DataSource, DeepPartial, ILike } from "typeorm";
 import { isAdmin, requireAuth } from "./middleware";
 import multer from "multer";
 import Jimp from "jimp";
@@ -41,9 +41,19 @@ function loadRecipeEndpoints(): Router {
 
     apiRouter.post("/", async function (req: Request, res: Response) {
         const dataSource: DataSource = res.locals.dataSource;
-        const recipe = dataSource.getRepository(Recipe).create(req.body);
-        const results = await dataSource.getRepository(Recipe).save(recipe);
-        return res.status(201).send(results.map((r) => r.recipeData()));
+        const body: DeepPartial<Recipe> = req.body;
+        if (Array.isArray(body)) {
+            return res.status(400).send("Invalid request");
+        }
+
+        const recipe = dataSource.getRepository(Recipe).create(body);
+        const result = await dataSource.getRepository(Recipe).save(recipe);
+        if (!result) {
+            return res.status(500).send("Failed to create recipe");
+        }
+
+        if (result)
+        return res.status(201).send(result.recipeData());
     });
 
     apiRouter.put("/:id", async function (req: Request, res: Response) {
