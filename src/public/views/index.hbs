@@ -5,9 +5,9 @@
 </head>
 
 <body>
-    <div class="flex flex-col justify-center items-center h-screen">
+    <div class="flex flex-col justify-center items-center h-screen p-4">
         {{> topbar}}
-        <div class="grid flex-1 center-content justify-items-center gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+        <div class="grid flex-1 center-content justify-items-center gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 w-full">
             {{#each recipes}}
             <a href="/recipe/{{this.id}}">
                 <div class="card bg-base-100 w-96 shadow-xl">

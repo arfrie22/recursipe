@@ -326,7 +326,7 @@ export async function init() {
 
                     ingredients.push({
                         name: recipe.name,
-                        quantity: recursive.quantity * result.multiplier,
+                        quantity: recursive.quantity * result.multiplier * recipe.yield,
                         unit: recipe.yieldUnit,
                     });
                 }
