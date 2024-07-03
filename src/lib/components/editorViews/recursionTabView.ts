@@ -231,6 +231,9 @@ export default class RecursionTabView extends Component {
         const cancelButton = document.createElement("button");
         cancelButton.classList.add("btn", "btn-outline", "flex-1");
         cancelButton.textContent = "Cancel";
+        cancelButton.addEventListener("click", (event) => {
+            dialog.close();
+        });
         dialogAction.appendChild(cancelButton);
 
         const addButton = document.createElement("button");
