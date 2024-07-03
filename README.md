@@ -19,6 +19,6 @@ A recursive recipe hosting tool
 
 ## API Documentation
 
-For all of the endpoints you need to get a session token from the `/auth` endpoint. Going to `/auth/signin` will give you a button to sign in with Google. After you sign in you will have your session token in your cookies.
+For all of the endpoints you need to get a session token from the `/auth` endpoint. Going to `/auth/signin` will give you a button to sign in with Google. After you sign in you will have your session token in your cookies, you can also use the signin button on the top bar.
 
 Read the documentation at `API.md`
