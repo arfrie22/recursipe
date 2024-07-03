@@ -1,4 +1,4 @@
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response, raw } from "express";
 import { ExpressAuth } from "@auth/express";
 import { TypeORMAdapter } from "@auth/typeorm-adapter";
 import Google from "@auth/express/providers/google";
@@ -339,7 +339,8 @@ export async function init() {
             });
 
 
-            const time: Record<TimeType | "Total", number> = {
+            type TimeKey = "Preparation" | "Cooking" | "Waiting" | "Total";
+            const timeRaw: Record<TimeKey, number> = {
                 [TimeType.Preparation]: 0,
                 [TimeType.Cooking]: 0,
                 [TimeType.Waiting]: 0,
@@ -348,10 +349,29 @@ export async function init() {
 
             for (const result of data) {
                 for (const step of result.steps) {
-                    time[step.timeType] += step.time;
-                    time.Total += step.time;
+                    timeRaw[step.timeType] += step.time;
+                    timeRaw.Total += step.time;
                 }
             }
+
+            const time: Record<TimeKey, string> = {
+                [TimeType.Preparation]: "",
+                [TimeType.Cooking]: "",
+                [TimeType.Waiting]: "",
+                Total: "",
+            };
+            
+            for (const key of Object.keys(timeRaw)) {
+                const rawTime = timeRaw[key as TimeKey];
+                const hours = Math.floor(rawTime / 60);
+                const minutes = rawTime % 60;
+                if (hours === 0) {
+                    time[key as TimeKey] = `${minutes}m`;
+                } else {
+                    time[key as TimeKey] = `${hours}h${minutes}m`;
+                }
+            }
+
 
             return res.render("recipe", { 
                 isSignedIn: res.locals.isSignedIn,
